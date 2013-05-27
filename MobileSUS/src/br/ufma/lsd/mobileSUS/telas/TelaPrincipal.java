@@ -6,10 +6,6 @@ import java.util.Iterator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
-import org.eclipse.swt.browser.ProgressEvent;
-import org.eclipse.swt.browser.ProgressListener;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -164,12 +160,12 @@ public class TelaPrincipal {
 		mntmListar.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				if(tela!=null&&tela.aberto()){
-		
-				}else {
+				if (tela != null && tela.aberto()) {
+
+				} else {
 					tela = new TelaListaChamados();
 					tela.open();
-				} 
+				}
 			}
 		});
 		mntmListar.setText("Listar");
@@ -215,30 +211,45 @@ public class TelaPrincipal {
 	}
 
 	void carregarMapa() {
-		/*
-		 * ArrayList<Usuario> lista = TratarEventos.sessao.getUsuarios(); for
-		 * (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();)
-		 * { Usuario usuario = (Usuario) iterator.next(); StringBuffer exec =
-		 * new StringBuffer("addUnidade('"); exec.append("" +
-		 * usuario.getNome()); exec.append("',");
-		 * exec.append(usuario.getLatitude()); exec.append(",");
-		 * exec.append(usuario.getLongitude()); exec.append(");"); try {
-		 * browser.evaluate(exec.toString()); } catch (Exception e) {
-		 * e.printStackTrace(); } System.out.println(exec); }
-		 * 
-		 * 
-		 * /////////////////////////////// ArrayList<Chamados> l2 =
-		 * TratarEventos.sessao.getChamados();
-		 * 
-		 * for (Iterator<Chamados> iterator = l2.iterator();
-		 * iterator.hasNext();) { Chamados chamado = (Chamados) iterator.next();
-		 * StringBuffer exec = new StringBuffer("addChamado('"); exec.append(""
-		 * + chamado.getId()); exec.append("',");
-		 * exec.append(chamado.getLatitude()); exec.append(",");
-		 * exec.append(chamado.getLongitude()); exec.append(");"); try {
-		 * browser.evaluate(exec.toString()); } catch (Exception e) {
-		 * e.printStackTrace(); } System.out.println(exec); }
-		 */
+
+		ArrayList<Usuario> lista = TratarEventos.sessao.getUsuarios();
+		for (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();) {
+			Usuario usuario = (Usuario) iterator.next();
+			StringBuffer exec = new StringBuffer("addUnidade('");
+			exec.append("" + usuario.getNome());
+			exec.append("',");
+			exec.append(usuario.getLatitude());
+			exec.append(",");
+			exec.append(usuario.getLongitude());
+			exec.append(");");
+			try {
+				browser.evaluate(exec.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println(exec);
+		}
+
+		// ///////////////////////////// ArrayList<Chamados> l2 =
+//		TratarEventos.sessao.getChamados();
+//
+//		for (Iterator<Chamados> iterator = l2.iterator(); iterator.hasNext();) {
+//			Chamados chamado = (Chamados) iterator.next();
+//			StringBuffer exec = new StringBuffer("addChamado('");
+//			exec.append("" + chamado.getId());
+//			exec.append("',");
+//			exec.append(chamado.getLatitude());
+//			exec.append(",");
+//			exec.append(chamado.getLongitude());
+//			exec.append(");");
+//			try {
+//				browser.evaluate(exec.toString());
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			System.out.println(exec);
+//		}
+
 	}
 
 	void criarListaChamados(final List lista, final ArrayList<Chamados> chamados) {
@@ -336,20 +347,6 @@ public class TelaPrincipal {
 
 			Usuario usuario = TratarEventos.buscarUsuario("" + arguments[0]);
 			new TelaMensagem().open(usuario);
-			return null;
-		}
-	}
-
-	static class ChamarChamado extends BrowserFunction {
-		ChamarChamado(Browser browser, String name) {
-			super(browser, name);
-		}
-
-		public Object function(Object[] arguments) {
-			Chamados chamado = TratarEventos.buscarChamado("" + arguments[0]);
-			if (chamado != null) {
-				new TelaChamado(chamado).open();
-			}
 			return null;
 		}
 	}

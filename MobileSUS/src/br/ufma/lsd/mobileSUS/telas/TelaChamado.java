@@ -1,14 +1,11 @@
 package br.ufma.lsd.mobileSUS.telas;
 
-import java.awt.color.CMMException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CBanner;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -19,6 +16,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -28,7 +26,6 @@ import org.eclipse.swt.widgets.Text;
 import br.ufma.lsd.mobileSUS.entidades.Chamados;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
-import org.eclipse.swt.widgets.Combo;
 
 public class TelaChamado {
 
@@ -42,6 +39,8 @@ public class TelaChamado {
 	private Combo cmbStatus;
 	private Combo cmbResponsavel;
 
+	
+	
 	/**
 	 * Launch the application.
 	 * 
@@ -125,8 +124,6 @@ public class TelaChamado {
 		new Label(shlChamado, SWT.NONE);
 
 		textLat = new Text(shlChamado, SWT.BORDER);
-		textLat.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
-				1, 1));
 		new Label(shlChamado, SWT.NONE);
 
 		Label lblLongitude = new Label(shlChamado, SWT.NONE);
