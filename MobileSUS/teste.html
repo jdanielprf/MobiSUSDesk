@@ -19,8 +19,8 @@ var map;
 
 function initialize() {
   var mapOptions = {
-    zoom: 6,
-    center: new google.maps.LatLng(44.30511474609375,2.5164330206204784),
+    zoom: 8,
+    center: new google.maps.LatLng(-2.5164330206204784,-44.30511474609375),
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -43,7 +43,7 @@ function addChamado(id,lat,log){
 	var myLatLng = new google.maps.LatLng(lat,log);
  	var marker = new google.maps.Marker({
       position: myLatLng,
-      icon: 'icon/chamado.png',
+      icon: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/48/Map-Marker-Bubble-Chartreuse-icon.png',
       map: map
    });
  	

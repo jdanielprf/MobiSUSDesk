@@ -64,22 +64,25 @@ public class TratarEventos {
 	}
 	
 	public static void testar(){
+		double lat=-2.5164330206204784;
+		double log=-44.30511474609375;
 		
-		for (int i = 0; i < 2; i++) {
+		for (int i = 1; i <= 2; i++) {
+			
 			Chamados chamado = new Chamados();
 			chamado.setDescricao("descricao "+i);
-			chamado.setLatitude(""+(i*10+10));
-			chamado.setLongitude(""+(i*10+5));
+			chamado.setLatitude(""+(lat+(i/10000.0)));
+			chamado.setLongitude(""+(log+(i/10000.0)));
 			chamado.setId(""+i);
 			addChamado(chamado);
 		}
 		
-		for (int i = 0; i < 10; i++) {
+		for (int i = 1; i <= 10; i++) {
 			Usuario u = new Usuario();
 			u.setId(""+i);
 			u.setNome("nome "+i);
-			u.setLatitude(""+(i*10+5));
-			u.setLongitude(""+(i*10+10));
+			u.setLatitude(""+(lat+(i/1000.0)));
+			u.setLongitude(""+(log+(i/1000.0)));
 			addUsuario(u);
 		}	
 	}

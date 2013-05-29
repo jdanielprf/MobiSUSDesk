@@ -37,6 +37,7 @@ public class TelaPrincipal {
 	private List list;
 	public static TelaPrincipal window = null;
 	private TelaListaChamados tela;
+	private ChamarChamados function2;
 
 	/**
 	 * Launch the application.
@@ -89,6 +90,8 @@ public class TelaPrincipal {
 		browser.setText(Utilidade.lerArquivo("teste.html"));
 		browser.setBounds(0, 319, 569, 443);
 		function = new ChamarMensagens(browser, "visualizarMsgs");
+		function2 = new ChamarChamados(browser, "visualizarChamado");
+		
 
 		Button btnAtualizarMapa = new Button(shell, SWT.NONE);
 		btnAtualizarMapa.addMouseListener(new MouseAdapter() {
@@ -230,25 +233,25 @@ public class TelaPrincipal {
 			System.out.println(exec);
 		}
 
-		// ///////////////////////////// ArrayList<Chamados> l2 =
-//		TratarEventos.sessao.getChamados();
-//
-//		for (Iterator<Chamados> iterator = l2.iterator(); iterator.hasNext();) {
-//			Chamados chamado = (Chamados) iterator.next();
-//			StringBuffer exec = new StringBuffer("addChamado('");
-//			exec.append("" + chamado.getId());
-//			exec.append("',");
-//			exec.append(chamado.getLatitude());
-//			exec.append(",");
-//			exec.append(chamado.getLongitude());
-//			exec.append(");");
-//			try {
-//				browser.evaluate(exec.toString());
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			System.out.println(exec);
-//		}
+		ArrayList<Chamados> l2 =TratarEventos.sessao.getChamados();
+
+		for (Iterator<Chamados> iterator = l2.iterator(); iterator.hasNext();) {
+			Chamados chamado = (Chamados) iterator.next();
+			StringBuffer exec = new StringBuffer("addChamado('");
+			exec.append("" + chamado.getId());
+			exec.append("',");
+			exec.append(chamado.getLatitude());
+			exec.append(",");
+			exec.append(chamado.getLongitude());
+			exec.append(");");
+			try {
+				browser.evaluate(exec.toString());
+				System.out.println(exec.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println(exec);
+		}
 
 	}
 
@@ -350,5 +353,16 @@ public class TelaPrincipal {
 			return null;
 		}
 	}
+	static class ChamarChamados extends BrowserFunction {
+		ChamarChamados(Browser browser, String name) {
+			super(browser, name);
+		}
 
+		public Object function(Object[] arguments) {
+
+			Chamados c = TratarEventos.buscarChamado("" + arguments[0]);
+			new TelaChamado(c).open();
+			return null;
+		}
+	}
 }
