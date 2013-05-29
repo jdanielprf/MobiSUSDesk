@@ -83,7 +83,7 @@ public class TelaChamado {
 	protected void createContents() {
 		shlChamado = new Shell();
 		shlChamado.setMinimumSize(new Point(387, 185));
-		shlChamado.setSize(388, 358);
+		shlChamado.setSize(452, 392);
 		shlChamado.setText("Chamado");
 		shlChamado.setLayout(new GridLayout(7, false));
 
@@ -141,6 +141,7 @@ public class TelaChamado {
 			public void mouseDown(MouseEvent arg0) {
 				TelaMapa map = new TelaMapa();
 				map.setChamado(TelaChamado.this);
+				map.posicao(chamado.getLatitude(), chamado.getLongitude());
 				map.open();
 			}
 		});

@@ -6,6 +6,8 @@ import java.util.Iterator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.BrowserFunction;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -210,7 +212,12 @@ public class TelaPrincipal {
 		});
 		btnNewButton.setBounds(575, 41, 184, 25);
 		btnNewButton.setText("Nova Ocorrencia");
-
+		shell.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent arg0) {
+				System.exit(0);
+			}
+		});
 	}
 
 	void carregarMapa() {

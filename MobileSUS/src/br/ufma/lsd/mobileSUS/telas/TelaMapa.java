@@ -16,7 +16,7 @@ public class TelaMapa {
 
 	protected Shell shell;
 	public static Label lblLAtLong;
-	public String lat="0",log="0";
+	public String lat,log;
 	private TelaChamado chamado;
 	 BrowserFunction function;
 	/**
@@ -31,7 +31,10 @@ public class TelaMapa {
 			e.printStackTrace();
 		}
 	}
-
+	public void posicao(String lat,String log) {
+		this.lat=lat;
+		this.log=log;
+	}
 	/**
 	 * Open the window.
 	 */
@@ -79,8 +82,14 @@ public class TelaMapa {
 		lblLAtLong = new Label(shell, SWT.NONE);
 		lblLAtLong.setBounds(91, 374, 331, 15);
 		lblLAtLong.setText("New Label");
-
+		
+		if(lat!=null&&log!=null){
+			String str="mudarPosicao("+lat+","+log+");";
+			browser.execute(str);
+			System.out.println(str);
+		}
 	}
+	
 	private void salvar(){
 		if (chamado!=null) {
 			chamado.alterarPosicao(lat, log);
