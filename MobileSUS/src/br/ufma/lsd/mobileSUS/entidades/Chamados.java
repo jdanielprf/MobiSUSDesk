@@ -3,10 +3,15 @@ package br.ufma.lsd.mobileSUS.entidades;
 import java.util.Date;
 
 public class Chamados {
+	public static String STATUS_ABERTO="ABERTO";
+	public static String STATUS_FECHADO="FECHADO";
+	public static String STATUS_EM_ATENDIMENTO="EM ATENDIMENTO";
+	public static String STATUS_INDETERMINADO="INDETERMINADO";
+	
 	private String descricao;
 	private String latitude;
 	private String longitude;
-	private String status;
+	private String status=STATUS_ABERTO;
 	private String id;
 	private Date data;
 	private Usuario responsavel;

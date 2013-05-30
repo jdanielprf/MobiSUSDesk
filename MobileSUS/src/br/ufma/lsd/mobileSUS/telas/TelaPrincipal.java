@@ -221,7 +221,7 @@ public class TelaPrincipal {
 	}
 
 	void carregarMapa() {
-
+		browser.evaluate("clear();");
 		ArrayList<Usuario> lista = TratarEventos.sessao.getUsuarios();
 		for (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();) {
 			Usuario usuario = (Usuario) iterator.next();
@@ -337,9 +337,14 @@ public class TelaPrincipal {
 			TableItem item = new TableItem(table, SWT.NONE);
 			item.setText(0, "" + c.getId());
 			item.setText(1, "" + c.getNome());
-			item.setText(2, "");
-			item.setText(2, "");
-			item.setText(3, "(" + c.getLatitude() + "," + c.getLongitude()
+			if(c.getChamado()==null){
+				item.setText(2, "Livre");
+				item.setText(3, "");
+			}else{
+				item.setText(2, "Ocupado");
+				item.setText(3, c.getChamado().getId());
+			}
+			item.setText(4, "(" + c.getLatitude() + "," + c.getLongitude()
 					+ ")");
 		}
 

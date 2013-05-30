@@ -66,7 +66,7 @@ public class TelaListaChamados {
 	}
 
 	private void processarTabela(final Table table) {
-		String[] titles = { "Nº", "Status", "Latitude", "Logitude" };
+		String[] titles = { "Nº","Responsável", "Status", "Latitude", "Logitude" };
 		for (int i = 0; i < titles.length; i++) {
 			TableColumn column = new TableColumn(table, SWT.NONE);
 			column.setText(titles[i]);
@@ -102,12 +102,17 @@ public class TelaListaChamados {
 			Chamados c = lista.get(i);
 			TableItem item = new TableItem(table, SWT.NONE);
 			item.setText(0, "" + c.getId());
+			if (c.getResponsavel() != null){
+				item.setText(2,c.getResponsavel().getNome());
+			}else {
+				item.setText(2, "");
+			}
 			if (c.getStatus() != null)
-				item.setText(1, "" + c.getStatus());
+				item.setText(3, "" + c.getStatus());
 			if (c.getLatitude() != null)
-				item.setText(2, "" + c.getLatitude());
+				item.setText(4, "" + c.getLatitude());
 			if (c.getLongitude() != null)
-				item.setText(3, "" + c.getLongitude());
+				item.setText(5, "" + c.getLongitude());
 
 		}
 		for (int i = 0; i < table.getColumns().length; i++) {

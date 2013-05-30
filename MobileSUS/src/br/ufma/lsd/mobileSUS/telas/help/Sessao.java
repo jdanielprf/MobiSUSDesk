@@ -16,7 +16,9 @@ public class Sessao {
 	public ArrayList<Chamados> getChamados() {
 		return chamados;
 	}
-	
+	public boolean removeEvent(Chamados o) {
+		return chamados.remove(o);
+	}
 	
 	public void setChamados(ArrayList<Chamados> chamados) {
 		this.chamados = chamados;

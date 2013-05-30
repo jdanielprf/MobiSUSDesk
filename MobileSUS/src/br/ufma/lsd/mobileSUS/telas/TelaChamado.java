@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -185,8 +186,6 @@ public class TelaChamado {
 				5, 1));
 
 		Button btnCancelar = new Button(shlChamado, SWT.NONE);
-		btnCancelar.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false,
-				false, 3, 1));
 		btnCancelar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent arg0) {
@@ -194,6 +193,16 @@ public class TelaChamado {
 			}
 		});
 		btnCancelar.setText("Cancelar");
+		new Label(shlChamado, SWT.NONE);
+		
+		Button btnRemover = new Button(shlChamado, SWT.NONE);
+		btnRemover.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+				removerChamado();
+			}
+		});
+		btnRemover.setText("Remover");
 		new Label(shlChamado, SWT.NONE);
 		new Label(shlChamado, SWT.NONE);
 
@@ -218,6 +227,26 @@ public class TelaChamado {
 			}
 		});
 		carregarListaUsuarios();
+		if(chamado!=null){
+			btnRemover.setVisible(true);
+		}else{
+			btnRemover.setVisible(false);
+		}
+	}
+
+	protected void removerChamado() {
+		if(chamado!=null){
+			if(TratarEventos.sessao.removeEvent(chamado)){
+				ControllerTelasAbertas.fecharChamado(chamado);
+				return;
+			}
+			
+		}
+		
+		MessageBox messagebox = new MessageBox(shlChamado, SWT.OK | SWT.ICON_ERROR);  
+		messagebox.setText("Erro!");  
+		messagebox.setMessage("Não foi possivel remover o chamado");  
+		messagebox.open();  
 	}
 
 	public void alterarPosicao(String lat, String longitude) {
@@ -259,9 +288,23 @@ public class TelaChamado {
 			String status = cmbStatus.getItem(cmbStatus.getSelectionIndex());
 			chamado.setStatus(status);
 		}
-
+		checkStatus();
 		shlChamado.dispose();
 		TelaPrincipal.window.carregarDados();
+	}
+	
+	public String getStatus() {
+		if (cmbStatus.getSelectionIndex() >= 0) {
+			String status = cmbStatus.getItem(cmbStatus.getSelectionIndex());
+			if(status.equals("Criado")){ 
+				return Chamados.STATUS_ABERTO;
+			}else if(status.equals("Em andamento")){
+				return Chamados.STATUS_EM_ATENDIMENTO;
+			}else if(status.equals("Cocluido")){
+				return Chamados.STATUS_FECHADO;
+			}
+		}
+		return Chamados.STATUS_INDETERMINADO; 
 	}
 
 	public void carregar() {
@@ -296,5 +339,28 @@ public class TelaChamado {
 	public void focus() {
 		if (shlChamado != null && !shlChamado.isDisposed())
 			shlChamado.forceActive();
+	}
+	
+	public void checkStatus() {
+		if(chamado.getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)&&getStatus().equals(Chamados.STATUS_FECHADO)){
+			TratarEventos.terminarAtendimentoChamado(chamado);
+		}else if(getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)){
+			Usuario u=null;
+			if (cmbResponsavel.getSelectionIndex() >= 0) {
+				String userName = cmbResponsavel.getItem(cmbResponsavel.getSelectionIndex());
+				u=TratarEventos.buscarUsuario(userName);
+			}
+			if(u!=null){
+
+				if(TratarEventos.iniciarAtendimentoChamado(u, chamado)){
+					return;
+				}
+			}
+			MessageBox messagebox = new MessageBox(shlChamado, SWT.OK | SWT.ICON_ERROR);  
+			messagebox.setText("Erro!");  
+			messagebox.setMessage("Não foi possivel alocar a unidade movel ao chamado");  
+			messagebox.open();  
+		} 
+		System.out.println(getStatus());
 	}
 }

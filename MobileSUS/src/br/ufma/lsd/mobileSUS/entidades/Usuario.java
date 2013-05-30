@@ -5,7 +5,7 @@ public class Usuario {
 	private String id;
 	private String latitude="0";
 	private String longitude="0";
-	
+	private Chamados chamado;
 	public Usuario(){}
 	
 	public Usuario(String nome){
@@ -50,5 +50,13 @@ public class Usuario {
 	@Override
 	public String toString() {
 		return nome;
+	}
+
+	public Chamados getChamado() {
+		return chamado;
+	}
+
+	public void setChamado(Chamados chamado) {
+		this.chamado = chamado;
 	}
 }
