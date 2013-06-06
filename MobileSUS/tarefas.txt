@@ -1,0 +1,35 @@
+
+********************Desktop:
+
+visualização em tempo real das posições das ambulancias(por timer?)
+visualização no mapa a localização dos chamados
+==colocar ambulancias livres em verde
+==colocar ambulancias ocupadas em vermelho
+
+==colocar chamados em aberto em vermelho
+==colocar chamados em atendimento em verde
+
+
+chat com as ambulancias
+salvar historico chat e chamados(upload para o midleware)
+lista de chamados(com filtro)
+lista de ambulancias
+alocar ambulancia ao chamado
+criar chamados
+controlar status chamados
+==interface de comunicação para o chat
+==interface de comunicação para o download
+==interface de comunicação para o contexto
+
+********************Mobile:
+
+mostrar informações do chamado
+aceitar chamado
+chat com a central
+upload de fotos e videos
+finalizar chamado
+interface usando ActiveBar
+simular rotas()
+==interface de comunicação para o chat
+==interface de comunicação para o upload
+==interface de comunicação para o contexto
