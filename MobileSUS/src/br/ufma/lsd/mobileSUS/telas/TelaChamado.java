@@ -142,7 +142,8 @@ public class TelaChamado {
 			public void mouseDown(MouseEvent arg0) {
 				TelaMapa map = new TelaMapa();
 				map.setChamado(TelaChamado.this);
-				map.posicao(chamado.getLatitude(), chamado.getLongitude());
+				if(chamado!=null)
+					map.posicao(chamado.getLatitude(), chamado.getLongitude());
 				map.open();
 			}
 		});
@@ -217,16 +218,18 @@ public class TelaChamado {
 				false, 2, 1));
 
 		btnNewButton.setText("Salvar");
-		carregar();
+		
 
 		shlChamado.addDisposeListener(new DisposeListener() {
 
 			@Override
 			public void widgetDisposed(DisposeEvent arg0) {
 				ControllerTelasAbertas.fecharChamado(chamado);
+				shlChamado.close();
 			}
 		});
 		carregarListaUsuarios();
+		carregar();
 		if(chamado!=null){
 			btnRemover.setVisible(true);
 		}else{
@@ -327,6 +330,19 @@ public class TelaChamado {
 			for (int i = 0; i < itens.length; i++) {
 				if (itens[i].equals(chamado.getStatus())) {
 					cmbStatus.select(i);
+					break;
+				}
+			}
+		}
+		System.out.println("==>"+chamado.getResponsavel());
+		if (chamado.getResponsavel() != null) {
+			String[] itens = cmbResponsavel.getItems();
+		
+			for (int i = 0; i < itens.length; i++) {
+				if (itens[i].equals(chamado.getResponsavel().toString())) {
+					cmbResponsavel.select(i);
+					System.out.println("FOI!!!!!!");
+					break;
 				}
 			}
 		}

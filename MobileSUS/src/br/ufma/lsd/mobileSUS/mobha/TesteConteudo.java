@@ -10,7 +10,7 @@ import br.ufma.lsd.mbhealthnet.android.mobha.content.MOBHAContentImpl;
 import br.ufma.lsd.mbhealthnet.communication.exception.DomainParticipantNotCreatedException;
 import br.ufma.lsd.mbhealthnet.communication.pubsub.PubSubTopicListener;
 
-public class Teste {
+public class TesteConteudo {
 	private static String user="teste";
 	private static MOBHAContentImpl cont;
 	public static void main(String[] args) {

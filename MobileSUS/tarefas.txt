@@ -11,25 +11,33 @@ visualização no mapa a localização dos chamados
 
 
 chat com as ambulancias
-salvar historico chat e chamados(upload para o midleware)
-lista de chamados(com filtro)
+salvar historico chat e chamados(upload para o midlleware)
+lista de chamados(com filtro?)
 lista de ambulancias
-alocar ambulancia ao chamado
 criar chamados
+=alocar ambulancia ao chamado
+
 controlar status chamados
+
+midleware[Daniel]
 ==interface de comunicação para o chat
-==interface de comunicação para o download
+==interface de comunicação para o download de arquivos
+==upload do chamado
 ==interface de comunicação para o contexto
 
 ********************Mobile:
 
 mostrar informações do chamado
-aceitar chamado
 chat com a central
 upload de fotos e videos
-finalizar chamado
+finalizar chamado, com relatorio
 interface usando ActiveBar
-simular rotas()
+
+
+simular rotas(como fazer???)
+
+
+midleware[Daniel]
 ==interface de comunicação para o chat
 ==interface de comunicação para o upload
 ==interface de comunicação para o contexto

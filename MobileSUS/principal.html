@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Localização das unidade moveis</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+
+<script>
+    
+var map;
+var markersArray= [];
+
+function initialize() {
+	
+	 
+	  google.maps.Map.prototype.clearMarkers = function() {
+		    for(var i=0; i < this.markers.length; i++){
+		        this.markers[i].setMap(null);
+		    }
+		    this.markers = new Array();
+		};
+		
+		
+  var mapOptions = {
+    zoom: 11,
+    center: new google.maps.LatLng(-2.5164330206204784,-44.30511474609375),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+ 
+	
+}
+
+function addUnidadeLivre(id,lat,log){
+	var myLatLng = new google.maps.LatLng(lat,log);
+ 	var marker = new google.maps.Marker({
+      position: myLatLng,
+      icon: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Bubble-Chartreuse-icon.png',
+      map: map
+   });
+ 	
+ 	google.maps.event.addListener(marker, 'click', function(event) {
+ 		visualizarMsgs(id);
+ 	});
+ 	markersArray.push(marker);
+}
+
+
+function addUnidadeOcupada(id,lat,log){
+	var myLatLng = new google.maps.LatLng(lat,log);
+ 	var marker = new google.maps.Marker({
+      position: myLatLng,
+      icon: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Bubble-Pink-icon.png',
+      map: map
+   });
+ 	
+ 	google.maps.event.addListener(marker, 'click', function(event) {
+ 		visualizarMsgs(id);
+ 	});
+ 	markersArray.push(marker);
+}
+
+function addChamado(id,lat,log){
+	var myLatLng = new google.maps.LatLng(lat,log);
+ 	var marker = new google.maps.Marker({
+      position: myLatLng,
+      icon: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Flag-1-Left-Pink-icon.png',
+      map: map
+   });
+ 	
+ 	google.maps.event.addListener(marker, 'click', function(event) {
+ 		visualizarChamado(id);
+ 	});
+ 	markersArray.push(marker);
+}
+
+function addChamadoAtendimento(id,lat,log){
+	var myLatLng = new google.maps.LatLng(lat,log);
+ 	var marker = new google.maps.Marker({
+      position: myLatLng,
+      icon: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Flag-2-Right-Azure-icon.png',
+      map: map
+   });
+ 	
+ 	google.maps.event.addListener(marker, 'click', function(event) {
+ 		visualizarChamado(id);
+ 	});
+ 	markersArray.push(marker);
+}
+function clear(){
+	for (i in markersArray) {
+		markersArray[i].setMap(null);
+	}
+}
+google.maps.event.addDomListener(window, 'load', initialize);
+
+
+</script>
+
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>

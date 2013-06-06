@@ -89,11 +89,10 @@ public class TelaPrincipal {
 		shell.setText("MOBISUS");
 
 		browser = new Browser(shell, SWT.NONE);
-		browser.setText(Utilidade.lerArquivo("teste.html"));
+		browser.setText(Utilidade.lerArquivo("principal.html"));
 		browser.setBounds(0, 319, 569, 443);
 		function = new ChamarMensagens(browser, "visualizarMsgs");
 		function2 = new ChamarChamados(browser, "visualizarChamado");
-		
 
 		Button btnAtualizarMapa = new Button(shell, SWT.NONE);
 		btnAtualizarMapa.addMouseListener(new MouseAdapter() {
@@ -221,11 +220,18 @@ public class TelaPrincipal {
 	}
 
 	void carregarMapa() {
-		browser.evaluate("clear();");
+		try {
+			browser.evaluate("clear();");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		ArrayList<Usuario> lista = TratarEventos.sessao.getUsuarios();
 		for (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();) {
 			Usuario usuario = (Usuario) iterator.next();
-			StringBuffer exec = new StringBuffer("addUnidade('");
+			StringBuffer exec = new StringBuffer("addUnidadeOcupada('");
+			if (usuario.getChamado() != null) {
+				exec = new StringBuffer("addUnidadeLivre('");
+			}
 			exec.append("" + usuario.getNome());
 			exec.append("',");
 			exec.append(usuario.getLatitude());
@@ -240,11 +246,14 @@ public class TelaPrincipal {
 			System.out.println(exec);
 		}
 
-		ArrayList<Chamados> l2 =TratarEventos.sessao.getChamados();
+		ArrayList<Chamados> l2 = TratarEventos.sessao.getChamados();
 
 		for (Iterator<Chamados> iterator = l2.iterator(); iterator.hasNext();) {
 			Chamados chamado = (Chamados) iterator.next();
 			StringBuffer exec = new StringBuffer("addChamado('");
+			if (chamado.getResponsavel() != null) {
+				exec = new StringBuffer("addChamadoAtendimento('");
+			}
 			exec.append("" + chamado.getId());
 			exec.append("',");
 			exec.append(chamado.getLatitude());
@@ -337,10 +346,10 @@ public class TelaPrincipal {
 			TableItem item = new TableItem(table, SWT.NONE);
 			item.setText(0, "" + c.getId());
 			item.setText(1, "" + c.getNome());
-			if(c.getChamado()==null){
+			if (c.getChamado() == null) {
 				item.setText(2, "Livre");
 				item.setText(3, "");
-			}else{
+			} else {
 				item.setText(2, "Ocupado");
 				item.setText(3, c.getChamado().getId());
 			}
@@ -365,6 +374,7 @@ public class TelaPrincipal {
 			return null;
 		}
 	}
+
 	static class ChamarChamados extends BrowserFunction {
 		ChamarChamados(Browser browser, String name) {
 			super(browser, name);
