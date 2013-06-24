@@ -121,8 +121,9 @@ public class TelaListaChamados {
 	}
 
 	public boolean aberto() {
-
 		return !shlListaChamados.isDisposed();
 	}
 
+	
+	
 }

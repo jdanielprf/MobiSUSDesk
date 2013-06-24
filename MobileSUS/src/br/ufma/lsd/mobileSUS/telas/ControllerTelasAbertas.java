@@ -6,14 +6,14 @@ import br.ufma.lsd.mobileSUS.entidades.Chamados;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 
 public class ControllerTelasAbertas {
-	private static HashMap<Usuario, TelaMensagem> listaTelasMensagensAbertas = new HashMap<>();
+	private static HashMap<Usuario, TelaChat> listaTelasMensagensAbertas = new HashMap<>();
 	private static HashMap<Chamados, TelaChamado> listaTelasChamadosAbertas = new HashMap<>();
 	
 	public static void abrirMgs(Usuario u) {
 		System.out.println(listaTelasMensagensAbertas.containsKey(u));
 		if(!listaTelasMensagensAbertas.containsKey(u)){
 			System.out.println("Abrir Mensagens"+u);
-			TelaMensagem tela = new TelaMensagem();
+			TelaChat tela = new TelaChat();
 			listaTelasMensagensAbertas.put(u, tela);
 			tela.open(u);
 			
@@ -31,7 +31,7 @@ public class ControllerTelasAbertas {
 	
 	public static void forcarFecharMgs(Usuario u) {
 		if(listaTelasMensagensAbertas.containsKey(u)){
-			TelaMensagem tela = listaTelasMensagensAbertas.get(u);
+			TelaChat tela = listaTelasMensagensAbertas.get(u);
 			tela.fechar();
 			listaTelasMensagensAbertas.remove(u);
 		}

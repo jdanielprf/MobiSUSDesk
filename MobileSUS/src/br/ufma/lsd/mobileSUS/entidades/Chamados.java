@@ -15,6 +15,7 @@ public class Chamados {
 	private String id;
 	private Date data;
 	private Usuario responsavel;
+	private String relatorio;
 
 	public String getDescricao() {
 		return descricao;
@@ -75,5 +76,13 @@ public class Chamados {
 	@Override
 	public String toString() {
 		return "ID:" + id;
+	}
+
+	public String getRelatorio() {
+		return relatorio;
+	}
+
+	public void setRelatorio(String relatorio) {
+		this.relatorio = relatorio;
 	}
 }

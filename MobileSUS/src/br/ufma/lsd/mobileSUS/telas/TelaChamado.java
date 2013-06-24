@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -27,6 +29,8 @@ import org.eclipse.swt.widgets.Text;
 import br.ufma.lsd.mobileSUS.entidades.Chamados;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.ModifyEvent;
 
 public class TelaChamado {
 
@@ -39,9 +43,8 @@ public class TelaChamado {
 	private Text textID;
 	private Combo cmbStatus;
 	private Combo cmbResponsavel;
+	protected TelaArquivos tetlaArquivos;
 
-	
-	
 	/**
 	 * Launch the application.
 	 * 
@@ -83,7 +86,7 @@ public class TelaChamado {
 	 */
 	protected void createContents() {
 		shlChamado = new Shell();
-		shlChamado.setMinimumSize(new Point(387, 185));
+		shlChamado.setMinimumSize(new Point(452, 392));
 		shlChamado.setSize(452, 392);
 		shlChamado.setText("Chamado");
 		shlChamado.setLayout(new GridLayout(7, false));
@@ -142,7 +145,7 @@ public class TelaChamado {
 			public void mouseDown(MouseEvent arg0) {
 				TelaMapa map = new TelaMapa();
 				map.setChamado(TelaChamado.this);
-				if(chamado!=null)
+				if (chamado != null)
 					map.posicao(chamado.getLatitude(), chamado.getLongitude());
 				map.open();
 			}
@@ -155,6 +158,12 @@ public class TelaChamado {
 		lblResponsavel.setText("Responsavel:");
 
 		cmbResponsavel = new Combo(shlChamado, SWT.NONE);
+		cmbResponsavel.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent arg0) {
+
+				controleDeChamados();
+			}
+		});
 		cmbResponsavel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 4, 1));
 
@@ -173,6 +182,11 @@ public class TelaChamado {
 		new Label(shlChamado, SWT.NONE);
 
 		cmbStatus = new Combo(shlChamado, SWT.NONE);
+		cmbStatus.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent arg0) {
+				controleDeChamados();
+			}
+		});
 		cmbStatus
 				.setItems(new String[] { "Criado", "Em andamento", "Cocluido" });
 		cmbStatus.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
@@ -195,7 +209,7 @@ public class TelaChamado {
 		});
 		btnCancelar.setText("Cancelar");
 		new Label(shlChamado, SWT.NONE);
-		
+
 		Button btnRemover = new Button(shlChamado, SWT.NONE);
 		btnRemover.addMouseListener(new MouseAdapter() {
 			@Override
@@ -205,7 +219,25 @@ public class TelaChamado {
 		});
 		btnRemover.setText("Remover");
 		new Label(shlChamado, SWT.NONE);
-		new Label(shlChamado, SWT.NONE);
+		
+		Button btnArquivos = new Button(shlChamado, SWT.NONE);
+		btnArquivos.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+				String diretorio=TratarEventos.sessao.getDir()+chamado.getId()+"/";
+				if(!TelaArquivos.checkArquivos(diretorio)){
+					JOptionPane.showMessageDialog(null,
+							"Não existe nenhum arquivo para este chamado");
+				}else if(tetlaArquivos==null){
+					tetlaArquivos=new TelaArquivos(diretorio);
+				}else if(tetlaArquivos.fechado()){
+					tetlaArquivos=new TelaArquivos(diretorio);
+				}else{
+					tetlaArquivos.focus();
+				}
+			}
+		});
+		btnArquivos.setText("Arquivos");
 
 		Button btnNewButton = new Button(shlChamado, SWT.NONE);
 		btnNewButton.addMouseListener(new MouseAdapter() {
@@ -218,7 +250,6 @@ public class TelaChamado {
 				false, 2, 1));
 
 		btnNewButton.setText("Salvar");
-		
 
 		shlChamado.addDisposeListener(new DisposeListener() {
 
@@ -226,30 +257,48 @@ public class TelaChamado {
 			public void widgetDisposed(DisposeEvent arg0) {
 				ControllerTelasAbertas.fecharChamado(chamado);
 				shlChamado.close();
+				System.out.println("fechar");
 			}
 		});
+
 		carregarListaUsuarios();
 		carregar();
-		if(chamado!=null){
+		if (chamado != null) {
 			btnRemover.setVisible(true);
-		}else{
+		} else {
 			btnRemover.setVisible(false);
 		}
 	}
 
+	private void controleDeChamados() {
+		System.out.println("controle de chamados");
+		System.out.println(cmbResponsavel.getSelectionIndex());
+		System.out.println(cmbStatus.getSelectionIndex());
+		if (cmbResponsavel.getSelectionIndex() > 0
+				&& cmbStatus.getSelectionIndex() == -1) {
+			cmbStatus.select(1);
+		} else if (cmbStatus.getSelectionIndex() > 0
+				&& cmbResponsavel.getSelectionIndex() <= 0) {
+
+			cmbStatus.select(0);
+
+		} 
+	}
+
 	protected void removerChamado() {
-		if(chamado!=null){
-			if(TratarEventos.sessao.removeEvent(chamado)){
+		if (chamado != null) {
+			if (TratarEventos.sessao.removeEvent(chamado)) {
 				ControllerTelasAbertas.fecharChamado(chamado);
 				return;
 			}
-			
+
 		}
-		
-		MessageBox messagebox = new MessageBox(shlChamado, SWT.OK | SWT.ICON_ERROR);  
-		messagebox.setText("Erro!");  
-		messagebox.setMessage("Não foi possivel remover o chamado");  
-		messagebox.open();  
+
+		MessageBox messagebox = new MessageBox(shlChamado, SWT.OK
+				| SWT.ICON_ERROR);
+		messagebox.setText("Erro!");
+		messagebox.setMessage("Não foi possivel remover o chamado");
+		messagebox.open();
 	}
 
 	public void alterarPosicao(String lat, String longitude) {
@@ -295,19 +344,19 @@ public class TelaChamado {
 		shlChamado.dispose();
 		TelaPrincipal.window.carregarDados();
 	}
-	
+
 	public String getStatus() {
 		if (cmbStatus.getSelectionIndex() >= 0) {
 			String status = cmbStatus.getItem(cmbStatus.getSelectionIndex());
-			if(status.equals("Criado")){ 
+			if (status.equals("Criado")) {
 				return Chamados.STATUS_ABERTO;
-			}else if(status.equals("Em andamento")){
+			} else if (status.equals("Em andamento")) {
 				return Chamados.STATUS_EM_ATENDIMENTO;
-			}else if(status.equals("Cocluido")){
+			} else if (status.equals("Cocluido")) {
 				return Chamados.STATUS_FECHADO;
 			}
 		}
-		return Chamados.STATUS_INDETERMINADO; 
+		return Chamados.STATUS_INDETERMINADO;
 	}
 
 	public void carregar() {
@@ -334,10 +383,10 @@ public class TelaChamado {
 				}
 			}
 		}
-		System.out.println("==>"+chamado.getResponsavel());
+		System.out.println("==>" + chamado.getResponsavel());
 		if (chamado.getResponsavel() != null) {
 			String[] itens = cmbResponsavel.getItems();
-		
+
 			for (int i = 0; i < itens.length; i++) {
 				if (itens[i].equals(chamado.getResponsavel().toString())) {
 					cmbResponsavel.select(i);
@@ -356,27 +405,31 @@ public class TelaChamado {
 		if (shlChamado != null && !shlChamado.isDisposed())
 			shlChamado.forceActive();
 	}
-	
-	public void checkStatus() {
-		if(chamado.getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)&&getStatus().equals(Chamados.STATUS_FECHADO)){
-			TratarEventos.terminarAtendimentoChamado(chamado);
-		}else if(getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)){
-			Usuario u=null;
-			if (cmbResponsavel.getSelectionIndex() >= 0) {
-				String userName = cmbResponsavel.getItem(cmbResponsavel.getSelectionIndex());
-				u=TratarEventos.buscarUsuario(userName);
-			}
-			if(u!=null){
 
-				if(TratarEventos.iniciarAtendimentoChamado(u, chamado)){
+	public void checkStatus() {
+		if (chamado.getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)
+				&& getStatus().equals(Chamados.STATUS_FECHADO)) {
+			TratarEventos.terminarAtendimentoChamado(chamado);
+		} else if (getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)) {
+			Usuario u = null;
+			if (cmbResponsavel.getSelectionIndex() >= 0) {
+				String userName = cmbResponsavel.getItem(cmbResponsavel
+						.getSelectionIndex());
+				u = TratarEventos.buscarUsuario(userName);
+			}
+			if (u != null) {
+
+				if (TratarEventos.iniciarAtendimentoChamado(u, chamado)) {
 					return;
 				}
 			}
-			MessageBox messagebox = new MessageBox(shlChamado, SWT.OK | SWT.ICON_ERROR);  
-			messagebox.setText("Erro!");  
-			messagebox.setMessage("Não foi possivel alocar a unidade movel ao chamado");  
-			messagebox.open();  
-		} 
+			MessageBox messagebox = new MessageBox(shlChamado, SWT.OK
+					| SWT.ICON_ERROR);
+			messagebox.setText("Erro!");
+			messagebox
+					.setMessage("Não foi possivel alocar a unidade movel ao chamado");
+			messagebox.open();
+		}
 		System.out.println(getStatus());
 	}
 }

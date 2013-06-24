@@ -41,3 +41,8 @@ midleware[Daniel]
 ==interface de comunicação para o chat
 ==interface de comunicação para o upload
 ==interface de comunicação para o contexto
+
+
+
+
+teste  linha

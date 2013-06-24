@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -13,6 +12,8 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -21,12 +22,10 @@ import org.eclipse.swt.widgets.Text;
 
 import br.ufma.lsd.mobileSUS.entidades.Msg;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
+import br.ufma.lsd.mobileSUS.mobha.Processamento;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-
-public class TelaMensagem {
+public class TelaChat {
 
 	protected Shell shlMensagem;
 	private Text text;
@@ -34,7 +33,7 @@ public class TelaMensagem {
 	private StyledText styledText;
 
 	public static void main(String[] args) {
-		new TelaMensagem().open(new Usuario("TEste "));
+		new TelaChat().open(new Usuario("TEste "));
 	}
 
 	/**
@@ -150,6 +149,9 @@ public class TelaMensagem {
 		msg.setDestino(usuario);
 		TratarEventos.sessao.addMsgEnviada(msg);
 		mostarMensagem(msg);
+		
+		Processamento.get().enviarMsgChat(usuario.getId(), msg.getMsg());
+		
 	}
 
 	public void fechar() {

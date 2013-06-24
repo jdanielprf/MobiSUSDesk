@@ -13,6 +13,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.internal.theme.Theme;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
@@ -67,11 +68,14 @@ public class TelaPrincipal {
 	 * Open the window.
 	 */
 	public void open() {
+
 		Display display = Display.getDefault();
 		createContents();
 		carregarDados();
+	
 		shell.open();
 		shell.layout();
+	//	Display.getDefault().syncExec( new RecarregarMapa());
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -361,6 +365,8 @@ public class TelaPrincipal {
 			table.getColumn(i).pack();
 		}
 	}
+	
+
 
 	static class ChamarMensagens extends BrowserFunction {
 		ChamarMensagens(Browser browser, String name) {
@@ -370,7 +376,7 @@ public class TelaPrincipal {
 		public Object function(Object[] arguments) {
 
 			Usuario usuario = TratarEventos.buscarUsuario("" + arguments[0]);
-			new TelaMensagem().open(usuario);
+			new TelaChat().open(usuario);
 			return null;
 		}
 	}
@@ -387,4 +393,6 @@ public class TelaPrincipal {
 			return null;
 		}
 	}
+	
+	
 }

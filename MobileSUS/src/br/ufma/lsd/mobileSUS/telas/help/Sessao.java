@@ -12,7 +12,7 @@ public class Sessao {
 	private ArrayList<Chamados> chamados=new ArrayList<Chamados>();
 	private ArrayList<Usuario> usuarios=new ArrayList<Usuario>();
 	private HashMap<String, ArrayList<Msg>> mensagens=new HashMap<String, ArrayList<Msg>>();
-	
+	private String dir="arquivos/";
 	public ArrayList<Chamados> getChamados() {
 		return chamados;
 	}
@@ -77,6 +77,12 @@ public class Sessao {
 		m.setDestino(u);
 		mensagens.get(u).add(m);
 		
+	}
+	public String getDir() {
+		return dir;
+	}
+	public void setDir(String dir) {
+		this.dir = dir;
 	}
 	
 	
