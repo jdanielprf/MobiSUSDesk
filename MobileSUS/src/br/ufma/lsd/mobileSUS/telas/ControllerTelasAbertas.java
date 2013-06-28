@@ -66,4 +66,11 @@ public class ControllerTelasAbertas {
 			listaTelasChamadosAbertas.remove(c);
 		}
 	}
+	
+	public static void chatInvocar(Usuario u) {
+		if(listaTelasChamadosAbertas.containsKey(u)){
+			TelaChat tela = listaTelasMensagensAbertas.get(u);
+			tela.carregarTodasMgs();
+		}
+	}
 }

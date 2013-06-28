@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import br.ufma.lsd.mobileSUS.entidades.Chamados;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
+import br.ufma.lsd.mobileSUS.mobha.LogicaProcessamento;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 import br.ufma.lsd.mobileSUS.util.Utilidade;
 
@@ -41,6 +42,11 @@ public class TelaPrincipal {
 	public static TelaPrincipal window = null;
 	private TelaListaChamados tela;
 	private ChamarChamados function2;
+	private static LogicaProcessamento processamento;
+
+	public static LogicaProcessamento getProcessamento() {
+		return processamento;
+	}
 
 	/**
 	 * Launch the application.
@@ -64,6 +70,11 @@ public class TelaPrincipal {
 		criarListaChamados(list, TratarEventos.sessao.getChamados());
 	}
 
+	public void initProcessamento() {
+		processamento = new LogicaProcessamento();
+		processamento.processarChat();
+	}
+
 	/**
 	 * Open the window.
 	 */
@@ -72,10 +83,11 @@ public class TelaPrincipal {
 		Display display = Display.getDefault();
 		createContents();
 		carregarDados();
-	
+		initProcessamento();
+
 		shell.open();
 		shell.layout();
-	//	Display.getDefault().syncExec( new RecarregarMapa());
+		// Display.getDefault().syncExec( new RecarregarMapa());
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -221,9 +233,29 @@ public class TelaPrincipal {
 				System.exit(0);
 			}
 		});
+		
+		processarMapa();
+	}
+
+	void processarMapa() {
+		
+		new Thread(new Runnable() {
+		      public void run() {
+		         while (true) {
+		            try { Thread.sleep(1000); } catch (Exception e) { }
+		            Display.getDefault().asyncExec(new Runnable() {
+		               public void run() {
+		            	   carregarMapa();
+		               }
+		            });
+		         }
+		      }
+		   }).start();
 	}
 
 	void carregarMapa() {
+		
+		System.out.println("Carregar mapa");
 		try {
 			browser.evaluate("clear();");
 		} catch (Exception e) {
@@ -232,6 +264,8 @@ public class TelaPrincipal {
 		ArrayList<Usuario> lista = TratarEventos.sessao.getUsuarios();
 		for (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();) {
 			Usuario usuario = (Usuario) iterator.next();
+			System.out.println(usuario);
+			System.out.println(usuario.getChamado());
 			StringBuffer exec = new StringBuffer("addUnidadeOcupada('");
 			if (usuario.getChamado() != null) {
 				exec = new StringBuffer("addUnidadeLivre('");
@@ -365,8 +399,6 @@ public class TelaPrincipal {
 			table.getColumn(i).pack();
 		}
 	}
-	
-
 
 	static class ChamarMensagens extends BrowserFunction {
 		ChamarMensagens(Browser browser, String name) {
@@ -393,6 +425,5 @@ public class TelaPrincipal {
 			return null;
 		}
 	}
-	
-	
+
 }

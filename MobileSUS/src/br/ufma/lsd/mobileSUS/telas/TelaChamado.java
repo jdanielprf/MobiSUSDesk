@@ -28,6 +28,8 @@ import org.eclipse.swt.widgets.Text;
 
 import br.ufma.lsd.mobileSUS.entidades.Chamados;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
+import br.ufma.lsd.mobileSUS.mobha.LogicaProcessamento;
+import br.ufma.lsd.mobileSUS.mobha.MOBHAChat;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
@@ -340,7 +342,20 @@ public class TelaChamado {
 			String status = cmbStatus.getItem(cmbStatus.getSelectionIndex());
 			chamado.setStatus(status);
 		}
+		
+		
 		checkStatus();
+		
+		if (cmbResponsavel.getSelectionIndex() <= 0) {
+			if(chamado.getResponsavel()!=null){
+				chamado.getResponsavel().setChamado(null);
+			}
+			
+			chamado.setResponsavel(null);
+		}else{
+			TelaPrincipal.getProcessamento().enviarChamado(chamado);
+		}
+		
 		shlChamado.dispose();
 		TelaPrincipal.window.carregarDados();
 	}
@@ -410,6 +425,7 @@ public class TelaChamado {
 		if (chamado.getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)
 				&& getStatus().equals(Chamados.STATUS_FECHADO)) {
 			TratarEventos.terminarAtendimentoChamado(chamado);
+			
 		} else if (getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)) {
 			Usuario u = null;
 			if (cmbResponsavel.getSelectionIndex() >= 0) {
@@ -417,6 +433,7 @@ public class TelaChamado {
 						.getSelectionIndex());
 				u = TratarEventos.buscarUsuario(userName);
 			}
+			
 			if (u != null) {
 
 				if (TratarEventos.iniciarAtendimentoChamado(u, chamado)) {
@@ -432,4 +449,5 @@ public class TelaChamado {
 		}
 		System.out.println(getStatus());
 	}
+	
 }

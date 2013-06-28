@@ -10,11 +10,17 @@ import java.util.Scanner;
 import br.ufma.lsd.mobileSUS.entidades.Chamados;
 import br.ufma.lsd.mobileSUS.entidades.Msg;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
+import br.ufma.lsd.mobileSUS.telas.ControllerTelasAbertas;
+import br.ufma.lsd.mobileSUS.telas.TelaPrincipal;
 import br.ufma.lsd.mobileSUS.telas.help.Sessao;
+import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class LogicaProcessamento {
-	Sessao s;
+	private Sessao s=TratarEventos.sessao;
 	public String pasta="arquivos/";
+	
+	
+	
 	public void processarChat() {
 		ArrayList<Usuario> listaUsuarios = s.getUsuarios();
 		for (Iterator<Usuario> iterator = listaUsuarios.iterator(); iterator.hasNext();) {
@@ -26,6 +32,7 @@ public class LogicaProcessamento {
 					msg.setRemetente(usuario);
 					msg.setMsg(texto);
 					s.addMsgRecebida(msg);
+					ControllerTelasAbertas.chatInvocar(usuario);
 				}
 			}, usuario.getId());
 		}
@@ -85,20 +92,20 @@ public class LogicaProcessamento {
 		}
 	}
 	public void enviarChamado(Chamados chamado) {
-		String texto="";
-		texto+="Chamado";
-		texto+=chamado.getId();
-		texto+=chamado.getLatitude();
-		texto+=chamado.getLongitude();
-		texto+=chamado.getDescricao();
-		texto+=chamado.getResponsavel().getId();
-		texto+=chamado.getStatus();
-		Processamento.get().enviarChamado(chamado.getResponsavel().getId(), texto);
+		String texto="*";
+		texto+="Chamado\n";
+		texto+=chamado.getId()+"\n";
+		texto+=chamado.getLatitude()+"\n";
+		texto+=chamado.getLongitude()+"\n";
+		texto+=chamado.getDescricao()+"\n";
+		texto+=chamado.getResponsavel().getId()+"\n";
+		texto+=chamado.getStatus()+"\n";
+		Processamento.get().enviarMsgChat(chamado.getResponsavel().getId(), texto);
 	}
 	
 	public Chamados receberChamado(String chamado) {
 		Scanner s=new Scanner(chamado);
-		if(s.nextLine().equals("Chamado")){
+		if(s.nextLine().equals("*Chamado")){
 			Chamados c = new Chamados();
 			c.setId(s.nextLine());
 			c.setLatitude(s.nextLine());
@@ -109,4 +116,17 @@ public class LogicaProcessamento {
 		}
 		return null;
 	}
+
+	public void processarRecebimentoChamado(String chamado) {
+		Chamados c=receberChamado(chamado);
+		if(c!=null){
+			Chamados c2 = TratarEventos.buscarChamado(c.getId());
+			c2.setRelatorio(c.getRelatorio());
+			c2.getResponsavel().setChamado(null);
+		}
+	}
+
+	
+
+	
 }

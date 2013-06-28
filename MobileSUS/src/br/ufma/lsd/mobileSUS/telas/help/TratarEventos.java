@@ -100,8 +100,8 @@ public class TratarEventos {
 
 		for (int i = 1; i <= 10; i++) {
 			Usuario u = new Usuario();
-			u.setId("" + i);
-			u.setNome("nome " + i);
+			u.setId("e1u" + i);
+			u.setNome("e1u" + i);
 			u.setLatitude("" + (lat + (i / 1000.0)));
 			u.setLongitude("" + (log + (i / 1000.0)));
 			addUsuario(u);

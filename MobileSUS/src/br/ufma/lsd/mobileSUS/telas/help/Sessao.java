@@ -43,9 +43,13 @@ public class Sessao {
 	
 	public void addMsgRecebida(Msg msg) {
 		ArrayList<Msg> listaMgs = mensagens.get(msg.getRemetente().getNome());
-		if(listaMgs!=null){
-			listaMgs.add(msg);
+		System.out.println("de:"+msg.getRemetente().getNome());
+		if(listaMgs==null){
+			listaMgs=new ArrayList<Msg>();
+			mensagens.put(msg.getRemetente().getNome(),listaMgs );
 		}
+		
+		listaMgs.add(msg);
 	}
 	
 	/** 

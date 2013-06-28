@@ -28,12 +28,12 @@ import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 public class TelaChat {
 
 	protected Shell shlMensagem;
-	private Text text;
+	private Text txtMsg;
 	private Usuario usuario;
-	private StyledText styledText;
+	private StyledText txtHistorico;
 
 	public static void main(String[] args) {
-		new TelaChat().open(new Usuario("TEste "));
+		new TelaChat().open(new Usuario("e1u2"));
 	}
 
 	/**
@@ -65,29 +65,29 @@ public class TelaChat {
 		shlMensagem.setSize(400, 383);
 		shlMensagem.setText("Mensagem");
 		shlMensagem.setLayout(new GridLayout(4, false));
-		
-				Label lblNomeDestinatario = new Label(shlMensagem, SWT.NONE);
-				lblNomeDestinatario.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-						false, false, 4, 1));
-				lblNomeDestinatario.setText(usuario.getNome());
-				
-						ScrolledComposite scrolledComposite = new ScrolledComposite(
-								shlMensagem, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-						scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-								true, 4, 1));
-						scrolledComposite.setExpandHorizontal(true);
-						scrolledComposite.setExpandVertical(true);
-						
-								styledText = new StyledText(scrolledComposite, SWT.BORDER);
-								styledText.setEditable(false);
-								styledText.setText("");
-								scrolledComposite.setContent(styledText);
-								scrolledComposite.setMinSize(styledText.computeSize(SWT.DEFAULT,
-										SWT.DEFAULT));
 
-		text = new Text(shlMensagem, SWT.BORDER);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		text.setFocus();
+		Label lblNomeDestinatario = new Label(shlMensagem, SWT.NONE);
+		lblNomeDestinatario.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+				false, false, 4, 1));
+		lblNomeDestinatario.setText(usuario.getNome());
+
+		ScrolledComposite scrolledComposite = new ScrolledComposite(
+				shlMensagem, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, 4, 1));
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
+
+		txtHistorico = new StyledText(scrolledComposite, SWT.BORDER);
+		txtHistorico.setEditable(false);
+		txtHistorico.setText("");
+		scrolledComposite.setContent(txtHistorico);
+		scrolledComposite.setMinSize(txtHistorico.computeSize(SWT.DEFAULT,
+				SWT.DEFAULT));
+
+		txtMsg = new Text(shlMensagem, SWT.BORDER);
+		txtMsg.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		txtMsg.setFocus();
 
 		Button btnNewButton = new Button(shlMensagem, SWT.NONE);
 		btnNewButton.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
@@ -120,38 +120,42 @@ public class TelaChat {
 		if (lista != null) {
 			for (Iterator<Msg> iterator = lista.iterator(); iterator.hasNext();) {
 				Msg msg = (Msg) iterator.next();
-				mostarMensagem(msg);
+				mostrarMensagem(msg);
 
 			}
 		}
 	}
 
-	private void mostarMensagem(Msg msg) {
+	private void mostrarMensagem(Msg msg) {
 		String u = "Eu";
 		if (msg.getDestino() == null) {
-			u = msg.getDestino().getNome();
+			if (msg.getDestino() != null) {
+				u = msg.getDestino().getNome();
+			}else if(msg.getRemetente()!=null){
+				u = msg.getRemetente().getNome();
+			}
 		}
-		if (!styledText.getText().equals("")) {
-			styledText.setText(styledText.getText() + "\n" + u + ":\n"
+		if (!txtHistorico.getText().equals("")) {
+			txtHistorico.setText(txtHistorico.getText() + "\n" + u + ":\n"
 					+ msg.getMsg());
 		} else {
-			styledText.setText(u + ":\n" + msg.getMsg());
+			txtHistorico.setText(u + ":\n" + msg.getMsg());
 		}
 	}
 
 	private void enviarMensagem() {
-		String mensagem = text.getText();
-		text.setText("");
-		text.setFocus();
+		String mensagem = txtMsg.getText();
+		txtMsg.setText("");
+		txtMsg.setFocus();
 
 		Msg msg = new Msg();
 		msg.setMsg(mensagem);
 		msg.setDestino(usuario);
 		TratarEventos.sessao.addMsgEnviada(msg);
-		mostarMensagem(msg);
-		
+		mostrarMensagem(msg);
+
 		Processamento.get().enviarMsgChat(usuario.getId(), msg.getMsg());
-		
+
 	}
 
 	public void fechar() {
@@ -161,4 +165,6 @@ public class TelaChat {
 	public void focus() {
 		shlMensagem.forceActive();
 	}
+	
+	
 }
