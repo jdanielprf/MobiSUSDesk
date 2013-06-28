@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-import br.ufma.lsd.mobileSUS.entidades.Chamados;
+import br.ufma.lsd.mobileSUS.entidades.Chamado;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 import br.ufma.lsd.mobileSUS.mobha.LogicaProcessamento;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
@@ -284,10 +284,10 @@ public class TelaPrincipal {
 			System.out.println(exec);
 		}
 
-		ArrayList<Chamados> l2 = TratarEventos.sessao.getChamados();
+		ArrayList<Chamado> l2 = TratarEventos.sessao.getChamados();
 
-		for (Iterator<Chamados> iterator = l2.iterator(); iterator.hasNext();) {
-			Chamados chamado = (Chamados) iterator.next();
+		for (Iterator<Chamado> iterator = l2.iterator(); iterator.hasNext();) {
+			Chamado chamado = (Chamado) iterator.next();
 			StringBuffer exec = new StringBuffer("addChamado('");
 			if (chamado.getResponsavel() != null) {
 				exec = new StringBuffer("addChamadoAtendimento('");
@@ -309,11 +309,11 @@ public class TelaPrincipal {
 
 	}
 
-	void criarListaChamados(final List lista, final ArrayList<Chamados> chamados) {
+	void criarListaChamados(final List lista, final ArrayList<Chamado> chamados) {
 		lista.removeAll();
-		for (Iterator<Chamados> iterator = chamados.iterator(); iterator
+		for (Iterator<Chamado> iterator = chamados.iterator(); iterator
 				.hasNext();) {
-			Chamados c = (Chamados) iterator.next();
+			Chamado c = (Chamado) iterator.next();
 			lista.add(c.toString());
 		}
 		lista.addMouseListener(new MouseListener() {
@@ -330,7 +330,7 @@ public class TelaPrincipal {
 			public void mouseDoubleClick(MouseEvent arg0) {
 				try {
 					if (lista.getSelectionIndex() >= 0) {
-						Chamados chamado = chamados.get(lista
+						Chamado chamado = chamados.get(lista
 								.getSelectionIndex());
 						System.out.println(chamado);
 						TelaChamado c = new TelaChamado(chamado);
@@ -420,7 +420,7 @@ public class TelaPrincipal {
 
 		public Object function(Object[] arguments) {
 
-			Chamados c = TratarEventos.buscarChamado("" + arguments[0]);
+			Chamado c = TratarEventos.buscarChamado("" + arguments[0]);
 			new TelaChamado(c).open();
 			return null;
 		}

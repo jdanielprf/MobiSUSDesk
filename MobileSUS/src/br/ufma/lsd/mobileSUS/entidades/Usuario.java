@@ -1,11 +1,18 @@
 package br.ufma.lsd.mobileSUS.entidades;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+@Entity
 public class Usuario {
 	private String nome;
+	@Id
+	
 	private String id;
 	private String latitude="0";
 	private String longitude="0";
-	private Chamados chamado;
+	@Transient
+	private Chamado chamado;
 	public Usuario(){}
 	
 	public Usuario(String nome){
@@ -52,11 +59,11 @@ public class Usuario {
 		return nome;
 	}
 
-	public Chamados getChamado() {
+	public Chamado getChamado() {
 		return chamado;
 	}
 
-	public void setChamado(Chamados chamado) {
+	public void setChamado(Chamado chamado) {
 		this.chamado = chamado;
 	}
 }

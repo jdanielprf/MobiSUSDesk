@@ -2,12 +2,12 @@ package br.ufma.lsd.mobileSUS.telas;
 
 import java.util.HashMap;
 
-import br.ufma.lsd.mobileSUS.entidades.Chamados;
+import br.ufma.lsd.mobileSUS.entidades.Chamado;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 
 public class ControllerTelasAbertas {
 	private static HashMap<Usuario, TelaChat> listaTelasMensagensAbertas = new HashMap<>();
-	private static HashMap<Chamados, TelaChamado> listaTelasChamadosAbertas = new HashMap<>();
+	private static HashMap<Chamado, TelaChamado> listaTelasChamadosAbertas = new HashMap<>();
 	
 	public static void abrirMgs(Usuario u) {
 		System.out.println(listaTelasMensagensAbertas.containsKey(u));
@@ -39,7 +39,7 @@ public class ControllerTelasAbertas {
 	
 	
 	
-	public static void abrirChamado(Chamados c) {
+	public static void abrirChamado(Chamado c) {
 		System.out.println(listaTelasChamadosAbertas.containsKey(c));
 		if(!listaTelasChamadosAbertas.containsKey(c)){
 			System.out.println("Abrir Mensagens"+c);
@@ -52,14 +52,14 @@ public class ControllerTelasAbertas {
 		}
 	}
 
-	public static void fecharChamado(Chamados c) {
+	public static void fecharChamado(Chamado c) {
 		System.out.println("Fechar tela:"+c+":"+listaTelasChamadosAbertas.containsKey(c));
 		if(listaTelasMensagensAbertas.containsKey(c)){
 			listaTelasChamadosAbertas.remove(c);
 		}
 	}
 	
-	public static void forcarFecharChamado(Chamados c) {
+	public static void forcarFecharChamado(Chamado c) {
 		if(listaTelasChamadosAbertas.containsKey(c)){
 			TelaChamado tela = listaTelasChamadosAbertas.get(c);
 			tela.fechar();

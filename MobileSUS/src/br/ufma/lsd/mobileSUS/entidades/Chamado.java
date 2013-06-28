@@ -2,18 +2,31 @@ package br.ufma.lsd.mobileSUS.entidades;
 
 import java.util.Date;
 
-public class Chamados {
-	public static String STATUS_ABERTO="ABERTO";
-	public static String STATUS_FECHADO="FECHADO";
-	public static String STATUS_EM_ATENDIMENTO="EM ATENDIMENTO";
-	public static String STATUS_INDETERMINADO="INDETERMINADO";
-	
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+@Entity
+public class Chamado {
+	public static String STATUS_ABERTO = "ABERTO";
+	public static String STATUS_FECHADO = "FECHADO";
+	public static String STATUS_EM_ATENDIMENTO = "EM ATENDIMENTO";
+	public static String STATUS_INDETERMINADO = "INDETERMINADO";
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private String id;
+
 	private String descricao;
 	private String latitude;
 	private String longitude;
-	private String status=STATUS_ABERTO;
-	private String id;
+	private String status = STATUS_ABERTO;
+
 	private Date data;
+	@OneToOne(cascade = CascadeType.ALL)
 	private Usuario responsavel;
 	private String relatorio;
 

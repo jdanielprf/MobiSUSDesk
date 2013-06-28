@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import br.ufma.lsd.mobileSUS.entidades.Chamados;
+import br.ufma.lsd.mobileSUS.entidades.Chamado;
 import br.ufma.lsd.mobileSUS.entidades.Msg;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 import br.ufma.lsd.mobileSUS.telas.ControllerTelasAbertas;
@@ -46,7 +46,7 @@ public class LogicaProcessamento {
 				
 				@Override
 				public void receberTexto(String texto,String nome) {
-					Chamados c = receberChamado(texto);
+					Chamado c = receberChamado(texto);
 					if(c!=null){
 						usuario.getChamado().setStatus(c.getStatus());
 						usuario.getChamado().setRelatorio(c.getRelatorio());
@@ -58,10 +58,10 @@ public class LogicaProcessamento {
 				public void receberBytes(byte[] texto,String nome) {
 					String pasta2=pasta+usuario.getChamado()+"/";
 					File f = new File(pasta2+nome);
-					File parent = f.getParentFile();
+					File pai = f.getParentFile();
 
-					if(!parent.exists() && !parent.mkdirs()){
-					    throw new IllegalStateException("Couldn't create dir: " + parent);
+					if(!pai.exists() && !pai.mkdirs()){
+					    throw new IllegalStateException("erro ao criar os diretorios: " + pai);
 					}
 					
 					PrintWriter gravar;
@@ -91,7 +91,7 @@ public class LogicaProcessamento {
 			}, usuario.getId());
 		}
 	}
-	public void enviarChamado(Chamados chamado) {
+	public void enviarChamado(Chamado chamado) {
 		String texto="*";
 		texto+="Chamado\n";
 		texto+=chamado.getId()+"\n";
@@ -103,10 +103,10 @@ public class LogicaProcessamento {
 		Processamento.get().enviarMsgChat(chamado.getResponsavel().getId(), texto);
 	}
 	
-	public Chamados receberChamado(String chamado) {
+	public Chamado receberChamado(String chamado) {
 		Scanner s=new Scanner(chamado);
 		if(s.nextLine().equals("*Chamado")){
-			Chamados c = new Chamados();
+			Chamado c = new Chamado();
 			c.setId(s.nextLine());
 			c.setLatitude(s.nextLine());
 			c.setLongitude(s.nextLine());
@@ -118,9 +118,9 @@ public class LogicaProcessamento {
 	}
 
 	public void processarRecebimentoChamado(String chamado) {
-		Chamados c=receberChamado(chamado);
+		Chamado c=receberChamado(chamado);
 		if(c!=null){
-			Chamados c2 = TratarEventos.buscarChamado(c.getId());
+			Chamado c2 = TratarEventos.buscarChamado(c.getId());
 			c2.setRelatorio(c.getRelatorio());
 			c2.getResponsavel().setChamado(null);
 		}

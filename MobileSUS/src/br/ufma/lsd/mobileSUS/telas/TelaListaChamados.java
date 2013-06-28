@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.SWT;
 
-import br.ufma.lsd.mobileSUS.entidades.Chamados;
+import br.ufma.lsd.mobileSUS.entidades.Chamado;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class TelaListaChamados {
@@ -82,7 +82,7 @@ public class TelaListaChamados {
 				
 				TableItem item = table.getItem(table.getSelectionIndex());
 			
-				Chamados chamado = TratarEventos.buscarChamado(item.getText(0));
+				Chamado chamado = TratarEventos.buscarChamado(item.getText(0));
 				ControllerTelasAbertas.abrirChamado(chamado);
 			}
 			
@@ -96,10 +96,10 @@ public class TelaListaChamados {
 		carregarTabela(TratarEventos.sessao.getChamados());
 	}
 
-	public void carregarTabela(List<Chamados> lista) {
+	public void carregarTabela(List<Chamado> lista) {
 
 		for (int i = 0; i < lista.size(); i++) {
-			Chamados c = lista.get(i);
+			Chamado c = lista.get(i);
 			TableItem item = new TableItem(table, SWT.NONE);
 			item.setText(0, "" + c.getId());
 			if (c.getResponsavel() != null){

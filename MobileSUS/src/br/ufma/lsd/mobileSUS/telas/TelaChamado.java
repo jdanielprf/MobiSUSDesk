@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import br.ufma.lsd.mobileSUS.entidades.Chamados;
+import br.ufma.lsd.mobileSUS.entidades.Chamado;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 import br.ufma.lsd.mobileSUS.mobha.LogicaProcessamento;
 import br.ufma.lsd.mobileSUS.mobha.MOBHAChat;
@@ -40,7 +40,7 @@ public class TelaChamado {
 	private Text textLat;
 	private Text textLong;
 	private Text textDescricao;
-	private Chamados chamado;
+	private Chamado chamado;
 	private DateTime dateTime;
 	private Text textID;
 	private Combo cmbStatus;
@@ -52,7 +52,7 @@ public class TelaChamado {
 	 * 
 	 * @param args
 	 */
-	public TelaChamado(Chamados c) {
+	public TelaChamado(Chamado c) {
 		chamado = c;
 	}
 
@@ -320,7 +320,7 @@ public class TelaChamado {
 
 	public void salvarChamado() {
 		if (chamado == null) {
-			chamado = new Chamados();
+			chamado = new Chamado();
 		}
 		chamado.setDescricao(textDescricao.getText());
 		chamado.setLatitude(textLat.getText());
@@ -364,14 +364,14 @@ public class TelaChamado {
 		if (cmbStatus.getSelectionIndex() >= 0) {
 			String status = cmbStatus.getItem(cmbStatus.getSelectionIndex());
 			if (status.equals("Criado")) {
-				return Chamados.STATUS_ABERTO;
+				return Chamado.STATUS_ABERTO;
 			} else if (status.equals("Em andamento")) {
-				return Chamados.STATUS_EM_ATENDIMENTO;
+				return Chamado.STATUS_EM_ATENDIMENTO;
 			} else if (status.equals("Cocluido")) {
-				return Chamados.STATUS_FECHADO;
+				return Chamado.STATUS_FECHADO;
 			}
 		}
-		return Chamados.STATUS_INDETERMINADO;
+		return Chamado.STATUS_INDETERMINADO;
 	}
 
 	public void carregar() {
@@ -422,11 +422,11 @@ public class TelaChamado {
 	}
 
 	public void checkStatus() {
-		if (chamado.getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)
-				&& getStatus().equals(Chamados.STATUS_FECHADO)) {
+		if (chamado.getStatus().equals(Chamado.STATUS_EM_ATENDIMENTO)
+				&& getStatus().equals(Chamado.STATUS_FECHADO)) {
 			TratarEventos.terminarAtendimentoChamado(chamado);
 			
-		} else if (getStatus().equals(Chamados.STATUS_EM_ATENDIMENTO)) {
+		} else if (getStatus().equals(Chamado.STATUS_EM_ATENDIMENTO)) {
 			Usuario u = null;
 			if (cmbResponsavel.getSelectionIndex() >= 0) {
 				String userName = cmbResponsavel.getItem(cmbResponsavel

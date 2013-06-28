@@ -3,14 +3,14 @@ package br.ufma.lsd.mobileSUS.telas.help;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import br.ufma.lsd.mobileSUS.entidades.Chamados;
+import br.ufma.lsd.mobileSUS.entidades.Chamado;
 import br.ufma.lsd.mobileSUS.entidades.Msg;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 
 public class TratarEventos {
 	public static Sessao sessao = new Sessao();
 
-	public static void addChamado(Chamados c) {
+	public static void addChamado(Chamado c) {
 		sessao.addChamado(c);
 	}
 
@@ -48,12 +48,12 @@ public class TratarEventos {
 		return null;
 	}
 
-	public static Chamados buscarChamado(String c) {
+	public static Chamado buscarChamado(String c) {
 		if (c == null)
 			return null;
-		java.util.List<Chamados> lista = sessao.getChamados();
-		for (Iterator<Chamados> iterator = lista.iterator(); iterator.hasNext();) {
-			Chamados chamado = (Chamados) iterator.next();
+		java.util.List<Chamado> lista = sessao.getChamados();
+		for (Iterator<Chamado> iterator = lista.iterator(); iterator.hasNext();) {
+			Chamado chamado = (Chamado) iterator.next();
 			if (chamado.getId().equals(c)) {
 				return chamado;
 			}
@@ -65,7 +65,7 @@ public class TratarEventos {
 		return sessao.buscarMgs(u);
 	}
 
-	public static boolean iniciarAtendimentoChamado(Usuario u, Chamados c) {
+	public static boolean iniciarAtendimentoChamado(Usuario u, Chamado c) {
 		if (u.getChamado() == null) {
 			if (c.getResponsavel() != null)
 				c.getResponsavel().setChamado(null);
@@ -77,9 +77,9 @@ public class TratarEventos {
 		return false;
 	}
 
-	public static boolean terminarAtendimentoChamado(Chamados c) {
+	public static boolean terminarAtendimentoChamado(Chamado c) {
 		c.getResponsavel().setChamado(null);
-		c.setStatus(Chamados.STATUS_FECHADO);
+		c.setStatus(Chamado.STATUS_FECHADO);
 		return true;
 
 	}
@@ -90,7 +90,7 @@ public class TratarEventos {
 
 		for (int i = 1; i <= 2; i++) {
 
-			Chamados chamado = new Chamados();
+			Chamado chamado = new Chamado();
 			chamado.setDescricao("descricao " + i);
 			chamado.setLatitude("" + (lat + (i / 10000.0)));
 			chamado.setLongitude("" + (log + (i / 10000.0)));
