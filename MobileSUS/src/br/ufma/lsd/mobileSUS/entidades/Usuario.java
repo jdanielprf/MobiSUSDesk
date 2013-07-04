@@ -2,6 +2,7 @@ package br.ufma.lsd.mobileSUS.entidades;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 @Entity
 public class Usuario {
@@ -9,9 +10,11 @@ public class Usuario {
 	@Id
 	
 	private String id;
-	private String latitude="0";
-	private String longitude="0";
 	@Transient
+	private String latitude=null;
+	@Transient
+	private String longitude=null;
+	@OneToOne
 	private Chamado chamado;
 	public Usuario(){}
 	

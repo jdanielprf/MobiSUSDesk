@@ -10,12 +10,14 @@ import java.util.HashMap;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.Chat;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.GenericInformation;
 import br.ufma.lsd.mbhealthnet.communication.pubsub.PubSubTopicListener;
+import br.ufma.lsd.mobileSUS.entidades.Usuario;
 import br.ufma.lsd.mobileSUS.telas.TelaPrincipal;
+import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class MOBHAChat {
 	private static String nome = MOBHAUtil.central;
 	private static String receber = "e1u1";
-	private static br.ufma.lsd.mbhealthnet.android.mobha.chat.MOBHAChat contService;
+	private static br.ufma.lsd.mbhealthnet.android.mobha.chat.MOBHAChat chatService;
 	private static HashMap<String,InterfaceChat> lista=new HashMap<String,InterfaceChat>();
 
 	private static void recever(Object o) {
@@ -34,6 +36,9 @@ public class MOBHAChat {
 			
 			if(g.message.startsWith("*Chamado")){
 				TelaPrincipal.getProcessamento().processarRecebimentoChamado(g.message);
+			
+			}else if(g.message.startsWith("*SolicitacaoChamado")){
+				enviarChamado(g.fromUserName);
 			}else{
 				InterfaceChat cal = lista.get(g.fromUserName);
 				if(cal!=null){
@@ -44,15 +49,25 @@ public class MOBHAChat {
 	}
 	
 	
+	private static void enviarChamado(String id) {
+		Usuario u=TratarEventos.buscarUsuario(id);
+		if(u!=null&&u.getChamado()!=null){
+			TelaPrincipal.getProcessamento().enviarChamado(u.getChamado());
+		}
+	}
+	public static void cancelar() {
+		chatService=null;
+	}
+
 	public static void init() {
 		System.out.println("!!!!!!!!!!!!"+nome);
-		if(contService!=null){
+		if(chatService!=null){
 			return;
 		}
 		try {
 
-			contService = new br.ufma.lsd.mbhealthnet.android.mobha.chat.MOBHAChat(nome, settingsProperties());
-			contService.registerSubTopicListener(new PubSubTopicListener() {
+			chatService = new br.ufma.lsd.mbhealthnet.android.mobha.chat.MOBHAChat(nome, settingsProperties());
+			chatService.registerSubTopicListener(new PubSubTopicListener() {
 				@Override
 				public void processTopic(Object o) {
 					recever(o);
@@ -78,7 +93,7 @@ public class MOBHAChat {
 			c.fromUserName=nome;
 			c.toUserName=para;
 			
-			contService.publishChat(c);
+			chatService.publishChat(c);
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -91,6 +106,7 @@ public class MOBHAChat {
 	
 	public static void main(String[] args) {
 		MOBHAChat.nome="e1u2";
+		MOBHAChat.receber = "e1u1";
 		MOBHAChat.init();
 		MOBHAChat.enviar("dados", receber);
 	}

@@ -3,6 +3,7 @@ package br.ufma.lsd.mobileSUS.telas;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
@@ -72,6 +73,7 @@ public class TelaChamado {
 	 * Open the window.
 	 */
 	public void open() {
+		System.out.println("open chamado");
 		Display display = Display.getDefault();
 		createContents();
 		shlChamado.open();
@@ -221,21 +223,24 @@ public class TelaChamado {
 		});
 		btnRemover.setText("Remover");
 		new Label(shlChamado, SWT.NONE);
-		
+
 		Button btnArquivos = new Button(shlChamado, SWT.NONE);
 		btnArquivos.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent arg0) {
-				String diretorio=TratarEventos.sessao.getDir()+chamado.getId()+"/";
-				if(!TelaArquivos.checkArquivos(diretorio)){
-					JOptionPane.showMessageDialog(null,
-							"Não existe nenhum arquivo para este chamado");
-				}else if(tetlaArquivos==null){
-					tetlaArquivos=new TelaArquivos(diretorio);
-				}else if(tetlaArquivos.fechado()){
-					tetlaArquivos=new TelaArquivos(diretorio);
-				}else{
-					tetlaArquivos.focus();
+				if (chamado.getId() != null) {
+					String diretorio = TratarEventos.sessao.getDir()
+							+ chamado.getId() + "/";
+					if (!TelaArquivos.checkArquivos(diretorio)) {
+						JOptionPane.showMessageDialog(null,
+								"Não existe nenhum arquivo para este chamado");
+					} else if (tetlaArquivos == null) {
+						tetlaArquivos = new TelaArquivos(diretorio);
+					} else if (tetlaArquivos.fechado()) {
+						tetlaArquivos = new TelaArquivos(diretorio);
+					} else {
+						tetlaArquivos.focus();
+					}
 				}
 			}
 		});
@@ -270,27 +275,34 @@ public class TelaChamado {
 		} else {
 			btnRemover.setVisible(false);
 		}
+		
+		if(chamado==null){
+			btnArquivos.setVisible(false);
+		}
 	}
 
 	private void controleDeChamados() {
 		System.out.println("controle de chamados");
-		System.out.println(cmbResponsavel.getSelectionIndex());
-		System.out.println(cmbStatus.getSelectionIndex());
 		if (cmbResponsavel.getSelectionIndex() > 0
 				&& cmbStatus.getSelectionIndex() == -1) {
+			
 			cmbStatus.select(1);
+			
 		} else if (cmbStatus.getSelectionIndex() > 0
 				&& cmbResponsavel.getSelectionIndex() <= 0) {
 
 			cmbStatus.select(0);
 
-		} 
+		}
 	}
 
 	protected void removerChamado() {
 		if (chamado != null) {
-			if (TratarEventos.sessao.removeEvent(chamado)) {
+			if (TratarEventos.sessao.removerChamado(chamado)) {
 				ControllerTelasAbertas.fecharChamado(chamado);
+				JOptionPane.showMessageDialog(null, "Chamado removido");
+				shlChamado.dispose();
+				TelaPrincipal.window.carregarDados();
 				return;
 			}
 
@@ -311,7 +323,7 @@ public class TelaChamado {
 	public void carregarListaUsuarios() {
 		cmbResponsavel.removeAll();
 		cmbResponsavel.add("");
-		ArrayList<Usuario> lista = TratarEventos.sessao.getUsuarios();
+		List<Usuario> lista = TratarEventos.sessao.getUsuarios();
 		for (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();) {
 			Usuario usuario = (Usuario) iterator.next();
 			cmbResponsavel.add(usuario.toString());
@@ -334,7 +346,7 @@ public class TelaChamado {
 		chamado.setData(data);
 
 		if (chamado.getId() == null) {
-			chamado.setId("" + new Random().nextInt(Integer.MAX_VALUE));
+			chamado.setId(new Random().nextInt(Integer.MAX_VALUE));
 			TratarEventos.addChamado(chamado);
 		}
 
@@ -342,22 +354,21 @@ public class TelaChamado {
 			String status = cmbStatus.getItem(cmbStatus.getSelectionIndex());
 			chamado.setStatus(status);
 		}
-		
-		
+
 		checkStatus();
-		
+
 		if (cmbResponsavel.getSelectionIndex() <= 0) {
-			if(chamado.getResponsavel()!=null){
+			if (chamado.getResponsavel() != null) {
 				chamado.getResponsavel().setChamado(null);
 			}
-			
+
 			chamado.setResponsavel(null);
-		}else{
+		} else {
 			TelaPrincipal.getProcessamento().enviarChamado(chamado);
 		}
-		
-		shlChamado.dispose();
+
 		TelaPrincipal.window.carregarDados();
+		shlChamado.dispose();
 	}
 
 	public String getStatus() {
@@ -425,7 +436,7 @@ public class TelaChamado {
 		if (chamado.getStatus().equals(Chamado.STATUS_EM_ATENDIMENTO)
 				&& getStatus().equals(Chamado.STATUS_FECHADO)) {
 			TratarEventos.terminarAtendimentoChamado(chamado);
-			
+
 		} else if (getStatus().equals(Chamado.STATUS_EM_ATENDIMENTO)) {
 			Usuario u = null;
 			if (cmbResponsavel.getSelectionIndex() >= 0) {
@@ -433,7 +444,7 @@ public class TelaChamado {
 						.getSelectionIndex());
 				u = TratarEventos.buscarUsuario(userName);
 			}
-			
+
 			if (u != null) {
 
 				if (TratarEventos.iniciarAtendimentoChamado(u, chamado)) {
@@ -449,5 +460,5 @@ public class TelaChamado {
 		}
 		System.out.println(getStatus());
 	}
-	
+
 }

@@ -69,8 +69,11 @@ public class TelaChat {
 		Label lblNomeDestinatario = new Label(shlMensagem, SWT.NONE);
 		lblNomeDestinatario.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
 				false, false, 4, 1));
-		lblNomeDestinatario.setText(usuario.getNome());
-
+		if(usuario.getLatitude()!=null&&usuario.getLongitude()!=null){
+			lblNomeDestinatario.setText(usuario.getNome()+"("+usuario.getLatitude()+","+usuario.getLongitude()+")");
+		}else{
+			lblNomeDestinatario.setText(usuario.getNome()+"(indeterminada)");
+		}
 		ScrolledComposite scrolledComposite = new ScrolledComposite(
 				shlMensagem, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
@@ -115,8 +118,13 @@ public class TelaChat {
 	}
 
 	public void carregarTodasMgs() {
+		
+		if(txtHistorico==null){
+			return;
+		}
 		ArrayList<Msg> lista = TratarEventos.buscarMgs(usuario);
-		System.out.println("<>>" + lista);
+		
+		
 		if (lista != null) {
 			for (Iterator<Msg> iterator = lista.iterator(); iterator.hasNext();) {
 				Msg msg = (Msg) iterator.next();
@@ -126,8 +134,12 @@ public class TelaChat {
 		}
 	}
 
-	private void mostrarMensagem(Msg msg) {
+	public void mostrarMensagem(Msg msg) {
 		String u = "Eu";
+		if(txtHistorico==null){
+			return;
+		}
+		
 		if (msg.getDestino() == null) {
 			if (msg.getDestino() != null) {
 				u = msg.getDestino().getNome();
@@ -135,10 +147,12 @@ public class TelaChat {
 				u = msg.getRemetente().getNome();
 			}
 		}
+		//se a caixa de mensagens ja estar preenchida
 		if (!txtHistorico.getText().equals("")) {
 			txtHistorico.setText(txtHistorico.getText() + "\n" + u + ":\n"
 					+ msg.getMsg());
 		} else {
+			//caso nao exista nenhuma mensagem
 			txtHistorico.setText(u + ":\n" + msg.getMsg());
 		}
 	}

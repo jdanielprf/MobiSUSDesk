@@ -82,7 +82,7 @@ public class TelaListaChamados {
 				
 				TableItem item = table.getItem(table.getSelectionIndex());
 			
-				Chamado chamado = TratarEventos.buscarChamado(item.getText(0));
+				Chamado chamado = TratarEventos.buscarChamado(Integer.parseInt(item.getText(0)));
 				ControllerTelasAbertas.abrirChamado(chamado);
 			}
 			

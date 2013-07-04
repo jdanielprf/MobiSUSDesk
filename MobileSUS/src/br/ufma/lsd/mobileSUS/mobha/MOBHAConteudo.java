@@ -31,7 +31,9 @@ public class MOBHAConteudo {
 	}
 	public static void init() {
 		System.out.println("!!!!!!!!!!!!");
-		
+		if(contService!=null){
+			return;
+		}
 		try {
 		
 			contService=MOBHAContentImpl.getInstance(settingsProperties(), userCentral);
@@ -59,6 +61,10 @@ public class MOBHAConteudo {
 		}
 
 		
+	}
+	
+	public static void cancelar(){
+		contService=null;
 	}
 	
 	

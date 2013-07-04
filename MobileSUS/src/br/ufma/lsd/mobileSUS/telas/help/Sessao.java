@@ -3,8 +3,12 @@ package br.ufma.lsd.mobileSUS.telas.help;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
+import javax.management.Query;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 import br.ufma.lsd.mobileSUS.entidades.Chamado;
@@ -12,8 +16,8 @@ import br.ufma.lsd.mobileSUS.entidades.Msg;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 
 public class Sessao {
-	private ArrayList<Chamado> chamados = new ArrayList<Chamado>();
-	private ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+//	private ArrayList<Chamado> chamados = new ArrayList<Chamado>();
+//	private ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
 	private HashMap<String, ArrayList<Msg>> mensagens = new HashMap<String, ArrayList<Msg>>();
 	private String dir = "arquivos/";
 
@@ -28,38 +32,45 @@ public class Sessao {
 		}
 	}
 
-	public ArrayList<Chamado> getChamados() {
-		return chamados;
+	public List<Chamado> getChamados() {
+		javax.persistence.Query query = em.createQuery("FROM Chamado");       
+		return query.getResultList(); 
+	}
+	
+	public List<Chamado> getTodosChamados() {
+		javax.persistence.Query query = em.createQuery("FROM Chamado c WHERE c.status<>'FECHADO'");       
+		return query.getResultList(); 
 	}
 
-	public boolean removeEvent(Chamado o) {
-		return chamados.remove(o);
+	public boolean removerChamado(Chamado o) {
+		EntityTransaction t = em.getTransaction();
+		t.begin();
+		em.remove(o);
+		t.commit();
+		return true;
 	}
 
-	public void setChamados(ArrayList<Chamado> chamados) {
-		this.chamados = chamados;
+
+
+	public List<Usuario> getUsuarios() {
+		javax.persistence.Query query = em.createQuery("FROM Usuario u");       
+		return query.getResultList(); 
 	}
 
-	public ArrayList<Usuario> getUsuarios() {
-		return usuarios;
-	}
-
-	public void setUsuarios(ArrayList<Usuario> usuarios) {
-		this.usuarios = usuarios;
-	}
 
 	public void addChamado(Chamado c) {
-		em.merge(c);
-		chamados.add(c);
+		salvar(c);
 	}
 
 	public void addUsuario(Usuario u) {
-		em.merge(u);
-		usuarios.add(u);
+		salvar(u);
 	}
 
 	public void salvar(Object o) {
+		EntityTransaction t = em.getTransaction();
+		t.begin();
 		em.merge(o);
+		t.commit();
 	}
 
 	public ArrayList<Msg> buscarMgs(Usuario u) {
@@ -119,5 +130,15 @@ public class Sessao {
 	public void setDir(String dir) {
 		this.dir = dir;
 	}
-
+	
+	public Usuario buscarUsuario(String idUsuario) {
+		List<Usuario> lista = getUsuarios();
+		for (Iterator iterator = lista.iterator(); iterator.hasNext();) {
+			Usuario usuario = (Usuario) iterator.next();
+			if(usuario.getId()==idUsuario){
+				return usuario;
+			}
+		}
+		return  null;
+	}
 }

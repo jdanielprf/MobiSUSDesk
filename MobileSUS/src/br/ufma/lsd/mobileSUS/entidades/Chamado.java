@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 @Entity
 public class Chamado {
@@ -17,8 +18,8 @@ public class Chamado {
 	public static String STATUS_INDETERMINADO = "INDETERMINADO";
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String id;
+	@GeneratedValue
+	private Integer id;
 
 	private String descricao;
 	private String latitude;
@@ -70,11 +71,11 @@ public class Chamado {
 		this.responsavel = responsavel;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

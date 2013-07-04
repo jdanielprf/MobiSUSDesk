@@ -1,7 +1,9 @@
 package br.ufma.lsd.mobileSUS.telas;
 
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -13,7 +15,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.theme.Theme;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
@@ -29,6 +30,7 @@ import org.eclipse.swt.widgets.TableItem;
 import br.ufma.lsd.mobileSUS.entidades.Chamado;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 import br.ufma.lsd.mobileSUS.mobha.LogicaProcessamento;
+import br.ufma.lsd.mobileSUS.mobha.MOBHAUtil;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 import br.ufma.lsd.mobileSUS.util.Utilidade;
 
@@ -37,11 +39,9 @@ public class TelaPrincipal {
 	protected Shell shell;
 	private Table table;
 	private Browser browser;
-	private BrowserFunction function;
 	private List list;
 	public static TelaPrincipal window = null;
 	private TelaListaChamados tela;
-	private ChamarChamados function2;
 	private static LogicaProcessamento processamento;
 
 	public static LogicaProcessamento getProcessamento() {
@@ -55,6 +55,7 @@ public class TelaPrincipal {
 	 */
 	public static void main(String[] args) {
 		try {
+			lerID();
 			TratarEventos.testar();
 
 			window = new TelaPrincipal();
@@ -70,9 +71,9 @@ public class TelaPrincipal {
 		criarListaChamados(list, TratarEventos.sessao.getChamados());
 	}
 
-	public void initProcessamento() {
+	public void initProcessamentoInformacoesMBHealthNet() {
 		processamento = new LogicaProcessamento();
-		processamento.processarChat();
+		processamento.init();
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class TelaPrincipal {
 		Display display = Display.getDefault();
 		createContents();
 		carregarDados();
-		initProcessamento();
+		initProcessamentoInformacoesMBHealthNet();
 
 		shell.open();
 		shell.layout();
@@ -107,8 +108,8 @@ public class TelaPrincipal {
 		browser = new Browser(shell, SWT.NONE);
 		browser.setText(Utilidade.lerArquivo("principal.html"));
 		browser.setBounds(0, 319, 569, 443);
-		function = new ChamarMensagens(browser, "visualizarMsgs");
-		function2 = new ChamarChamados(browser, "visualizarChamado");
+		new ChamarMensagens(browser, "visualizarMsgs");
+		new ChamarChamados(browser, "visualizarChamado");
 
 		Button btnAtualizarMapa = new Button(shell, SWT.NONE);
 		btnAtualizarMapa.addMouseListener(new MouseAdapter() {
@@ -156,9 +157,21 @@ public class TelaPrincipal {
 		mntmPreferencias.setMenu(menu_5);
 
 		MenuItem mntmServidor = new MenuItem(menu_5, SWT.NONE);
-		mntmServidor.setText("Servidor");
+		mntmServidor.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				configInfoServidor();
+			}
+		});
+		mntmServidor.setText("Configura\u00E7\u00F5es");
 
 		MenuItem mntmReiniciar = new MenuItem(menu_5, SWT.NONE);
+		mntmReiniciar.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				resetarConexaoServidor();
+			}
+		});
 		mntmReiniciar.setText("Reiniciar");
 
 		MenuItem mntmChamados = new MenuItem(menu, SWT.CASCADE);
@@ -233,39 +246,54 @@ public class TelaPrincipal {
 				System.exit(0);
 			}
 		});
-		
+
 		processarMapa();
 	}
 
+	protected void configInfoServidor() {
+		new TelaConfig().open();
+	}
+
+	protected void resetarConexaoServidor() {
+		processamento.cancelar();
+		processamento.init();
+	}
+
 	void processarMapa() {
-		
+
 		new Thread(new Runnable() {
-		      public void run() {
-		         while (true) {
-		            try { Thread.sleep(1000); } catch (Exception e) { }
-		            Display.getDefault().asyncExec(new Runnable() {
-		               public void run() {
-		            	   carregarMapa();
-		               }
-		            });
-		         }
-		      }
-		   }).start();
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(1000);
+					} catch (Exception e) {
+					}
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							carregarMapa();
+						}
+					});
+				}
+			}
+		}).start();
 	}
 
 	void carregarMapa() {
-		
-		System.out.println("Carregar mapa");
+
+		// System.out.println("Carregar mapa");
 		try {
 			browser.evaluate("clear();");
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
-		ArrayList<Usuario> lista = TratarEventos.sessao.getUsuarios();
+		java.util.List<Usuario> lista = TratarEventos.sessao.getUsuarios();
 		for (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();) {
 			Usuario usuario = (Usuario) iterator.next();
-			System.out.println(usuario);
-			System.out.println(usuario.getChamado());
+			if(usuario.getLatitude()==null||usuario.getLongitude()==null){
+				continue;
+			}
+			// System.out.println(usuario);
+			// System.out.println(usuario.getChamado());
 			StringBuffer exec = new StringBuffer("addUnidadeOcupada('");
 			if (usuario.getChamado() != null) {
 				exec = new StringBuffer("addUnidadeLivre('");
@@ -279,15 +307,18 @@ public class TelaPrincipal {
 			try {
 				browser.evaluate(exec.toString());
 			} catch (Exception e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
-			System.out.println(exec);
+			// System.out.println(exec);
 		}
 
-		ArrayList<Chamado> l2 = TratarEventos.sessao.getChamados();
+		java.util.List<Chamado> l2 = TratarEventos.sessao.getChamados();
 
 		for (Iterator<Chamado> iterator = l2.iterator(); iterator.hasNext();) {
 			Chamado chamado = (Chamado) iterator.next();
+			if (chamado.getLatitude() == null || chamado.getLongitude() == null) {
+				continue;
+			}
 			StringBuffer exec = new StringBuffer("addChamado('");
 			if (chamado.getResponsavel() != null) {
 				exec = new StringBuffer("addChamadoAtendimento('");
@@ -300,16 +331,17 @@ public class TelaPrincipal {
 			exec.append(");");
 			try {
 				browser.evaluate(exec.toString());
-				System.out.println(exec.toString());
+			//	System.out.println(exec.toString());
 			} catch (Exception e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
-			System.out.println(exec);
+			// System.out.println(exec);
 		}
 
 	}
 
-	void criarListaChamados(final List lista, final ArrayList<Chamado> chamados) {
+	void criarListaChamados(final List lista,
+			final java.util.List<Chamado> chamados) {
 		lista.removeAll();
 		for (Iterator<Chamado> iterator = chamados.iterator(); iterator
 				.hasNext();) {
@@ -389,17 +421,27 @@ public class TelaPrincipal {
 				item.setText(3, "");
 			} else {
 				item.setText(2, "Ocupado");
-				item.setText(3, c.getChamado().getId());
+				item.setText(3, "" + c.getChamado().getId());
 			}
-			item.setText(4, "(" + c.getLatitude() + "," + c.getLongitude()
-					+ ")");
+			if (c.getLatitude() != null && c.getLongitude() != null) {
+				item.setText(4, "(" + c.getLatitude() + "," + c.getLongitude()
+						+ ")");
+			} else {
+				item.setText(4, "(?,?)");
+			}
 		}
 
 		for (int i = 0; i < table.getColumns().length; i++) {
 			table.getColumn(i).pack();
 		}
+		table.redraw();
+		table.setVisible(true);
 	}
 
+	
+	
+	
+	///////////////////////////////////////////////////////////////////////
 	static class ChamarMensagens extends BrowserFunction {
 		ChamarMensagens(Browser browser, String name) {
 			super(browser, name);
@@ -420,10 +462,24 @@ public class TelaPrincipal {
 
 		public Object function(Object[] arguments) {
 
-			Chamado c = TratarEventos.buscarChamado("" + arguments[0]);
+			Chamado c = TratarEventos.buscarChamado(Integer.parseInt(""
+					+ arguments[0]));
 			new TelaChamado(c).open();
 			return null;
 		}
+	}
+	
+	public static void lerID(){
+		Scanner scan;
+		try {
+			scan = new Scanner(new FileInputStream("id.txt"));
+			if(scan.hasNextLine()){
+				MOBHAUtil.central=scan.nextLine();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

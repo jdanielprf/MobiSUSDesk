@@ -3,6 +3,7 @@ package br.ufma.lsd.mobileSUS.telas;
 import java.util.HashMap;
 
 import br.ufma.lsd.mobileSUS.entidades.Chamado;
+import br.ufma.lsd.mobileSUS.entidades.Msg;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 
 public class ControllerTelasAbertas {
@@ -67,10 +68,11 @@ public class ControllerTelasAbertas {
 		}
 	}
 	
-	public static void chatInvocar(Usuario u) {
-		if(listaTelasChamadosAbertas.containsKey(u)){
+	public static void chatInvocar(Usuario u, Msg msg) {
+		System.out.println("tela:"+listaTelasMensagensAbertas.containsKey(u));
+		if(listaTelasMensagensAbertas.containsKey(u)){
 			TelaChat tela = listaTelasMensagensAbertas.get(u);
-			tela.carregarTodasMgs();
+			tela.mostrarMensagem(msg);
 		}
 	}
 }

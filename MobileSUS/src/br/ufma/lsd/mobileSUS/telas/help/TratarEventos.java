@@ -48,7 +48,7 @@ public class TratarEventos {
 		return null;
 	}
 
-	public static Chamado buscarChamado(String c) {
+	public static Chamado buscarChamado(Integer c) {
 		if (c == null)
 			return null;
 		java.util.List<Chamado> lista = sessao.getChamados();
@@ -88,22 +88,22 @@ public class TratarEventos {
 		double lat = -2.5164330206204784;
 		double log = -44.30511474609375;
 
-		for (int i = 1; i <= 2; i++) {
-
-			Chamado chamado = new Chamado();
-			chamado.setDescricao("descricao " + i);
-			chamado.setLatitude("" + (lat + (i / 10000.0)));
-			chamado.setLongitude("" + (log + (i / 10000.0)));
-			chamado.setId("" + i);
-			addChamado(chamado);
-		}
+//		for (int i = 1; i <= 2; i++) {
+//
+//			Chamado chamado = new Chamado();
+//			chamado.setDescricao("descricao " + i);
+//			chamado.setLatitude("" + (lat + (i / 10000.0)));
+//			chamado.setLongitude("" + (log + (i / 10000.0)));
+//			chamado.setId( i);
+//			addChamado(chamado);
+//		}
 
 		for (int i = 1; i <= 10; i++) {
 			Usuario u = new Usuario();
 			u.setId("e1u" + i);
 			u.setNome("e1u" + i);
-			u.setLatitude("" + (lat + (i / 1000.0)));
-			u.setLongitude("" + (log + (i / 1000.0)));
+		//	u.setLatitude("" + (lat + (i / 1000.0)));
+		//	u.setLongitude("" + (log + (i / 1000.0)));
 			addUsuario(u);
 		}
 	}
