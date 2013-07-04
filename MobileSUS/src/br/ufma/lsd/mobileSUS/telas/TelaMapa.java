@@ -54,7 +54,7 @@ public class TelaMapa {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shell = new Shell();
+		shell = new Shell(TelaPrincipal.window.shell, SWT.SHELL_TRIM & (~SWT.RESIZE));
 		shell.setSize(608, 437);
 		shell.setText("MAPA");
 		

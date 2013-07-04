@@ -32,7 +32,7 @@ public class TelaArquivos {
 
 	public static void main(String[] args) {
 		try {
-			TelaArquivos window = new TelaArquivos(
+			new TelaArquivos(
 					"C:\\Users\\Public\\Pictures\\Sample Pictures\\");
 
 		} catch (Exception e) {
@@ -61,7 +61,7 @@ public class TelaArquivos {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shlArquivos = new Shell();
+		shlArquivos =  new Shell(TelaPrincipal.window.shell, SWT.SHELL_TRIM & (~SWT.RESIZE));
 		shlArquivos.setSize(361, 359);
 		shlArquivos.setText("Arquivos");
 

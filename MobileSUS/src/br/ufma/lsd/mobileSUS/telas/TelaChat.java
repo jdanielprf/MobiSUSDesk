@@ -61,7 +61,7 @@ public class TelaChat {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shlMensagem = new Shell();
+		shlMensagem =  new Shell(TelaPrincipal.window.shell, SWT.SHELL_TRIM & (~SWT.RESIZE));
 		shlMensagem.setSize(400, 383);
 		shlMensagem.setText("Mensagem");
 		shlMensagem.setLayout(new GridLayout(4, false));
@@ -113,6 +113,8 @@ public class TelaChat {
 			@Override
 			public void widgetDisposed(DisposeEvent arg0) {
 				ControllerTelasAbertas.fecharMgs(usuario);
+				shlMensagem.close();
+				System.out.println("fechar");
 			}
 		});
 	}

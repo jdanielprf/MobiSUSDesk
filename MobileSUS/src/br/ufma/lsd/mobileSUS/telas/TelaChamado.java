@@ -1,6 +1,5 @@
 package br.ufma.lsd.mobileSUS.telas;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +10,8 @@ import javax.swing.JOptionPane;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -29,11 +30,7 @@ import org.eclipse.swt.widgets.Text;
 
 import br.ufma.lsd.mobileSUS.entidades.Chamado;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
-import br.ufma.lsd.mobileSUS.mobha.LogicaProcessamento;
-import br.ufma.lsd.mobileSUS.mobha.MOBHAChat;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.ModifyEvent;
 
 public class TelaChamado {
 
@@ -89,7 +86,9 @@ public class TelaChamado {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shlChamado = new Shell();
+		shlChamado = new Shell(TelaPrincipal.window.shell, SWT.CLOSE
+				| SWT.TITLE | SWT.MIN);
+
 		shlChamado.setMinimumSize(new Point(452, 392));
 		shlChamado.setSize(452, 392);
 		shlChamado.setText("Chamado");
@@ -192,7 +191,7 @@ public class TelaChamado {
 			}
 		});
 		cmbStatus
-				.setItems(new String[] { "Criado", "Em andamento", "Cocluido" });
+				.setItems(new String[] { "Criado", "Em andamento", "Concluido" });
 		cmbStatus.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
 				5, 1));
 
@@ -257,7 +256,7 @@ public class TelaChamado {
 				false, 2, 1));
 
 		btnNewButton.setText("Salvar");
-
+		cmbStatus.select(0);
 		shlChamado.addDisposeListener(new DisposeListener() {
 
 			@Override
@@ -275,8 +274,8 @@ public class TelaChamado {
 		} else {
 			btnRemover.setVisible(false);
 		}
-		
-		if(chamado==null){
+
+		if (chamado == null) {
 			btnArquivos.setVisible(false);
 		}
 	}
@@ -284,10 +283,10 @@ public class TelaChamado {
 	private void controleDeChamados() {
 		System.out.println("controle de chamados");
 		if (cmbResponsavel.getSelectionIndex() > 0
-				&& cmbStatus.getSelectionIndex() == -1) {
-			
+				&& cmbStatus.getSelectionIndex() <= 0) {
+
 			cmbStatus.select(1);
-			
+
 		} else if (cmbStatus.getSelectionIndex() > 0
 				&& cmbResponsavel.getSelectionIndex() <= 0) {
 
@@ -326,7 +325,10 @@ public class TelaChamado {
 		List<Usuario> lista = TratarEventos.sessao.getUsuarios();
 		for (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();) {
 			Usuario usuario = (Usuario) iterator.next();
-			cmbResponsavel.add(usuario.toString());
+			if (usuario.getChamado() == null)
+				cmbResponsavel.add(usuario.toString());
+			else if (chamado!=null&&chamado.getResponsavel() != null&&chamado.getResponsavel().getId().equals(usuario.getId()))
+				cmbResponsavel.add(usuario.toString());
 		}
 	}
 
@@ -366,7 +368,7 @@ public class TelaChamado {
 		} else {
 			TelaPrincipal.getProcessamento().enviarChamado(chamado);
 		}
-
+		TratarEventos.sessao.salvar(chamado);
 		TelaPrincipal.window.carregarDados();
 		shlChamado.dispose();
 	}
@@ -378,11 +380,24 @@ public class TelaChamado {
 				return Chamado.STATUS_ABERTO;
 			} else if (status.equals("Em andamento")) {
 				return Chamado.STATUS_EM_ATENDIMENTO;
-			} else if (status.equals("Cocluido")) {
+			} else if (status.equals("Concluido")) {
 				return Chamado.STATUS_FECHADO;
 			}
 		}
 		return Chamado.STATUS_INDETERMINADO;
+	}
+
+	public String getStatus(String status) {
+		if (status != null) {
+			if (status.equals(Chamado.STATUS_ABERTO)) {
+				return "Criado";
+			} else if (status.equals(Chamado.STATUS_EM_ATENDIMENTO)) {
+				return "Em andamento";
+			} else if (status.equals(Chamado.STATUS_FECHADO)) {
+				return "Concluido";
+			}
+		}
+		return "";
 	}
 
 	public void carregar() {
@@ -400,15 +415,6 @@ public class TelaChamado {
 			dateTime.setYear(data.getYear());
 		}
 
-		if (chamado.getStatus() != null) {
-			String[] itens = cmbStatus.getItems();
-			for (int i = 0; i < itens.length; i++) {
-				if (itens[i].equals(chamado.getStatus())) {
-					cmbStatus.select(i);
-					break;
-				}
-			}
-		}
 		System.out.println("==>" + chamado.getResponsavel());
 		if (chamado.getResponsavel() != null) {
 			String[] itens = cmbResponsavel.getItems();
@@ -417,6 +423,19 @@ public class TelaChamado {
 				if (itens[i].equals(chamado.getResponsavel().toString())) {
 					cmbResponsavel.select(i);
 					System.out.println("FOI!!!!!!");
+					break;
+				}
+			}
+		}
+
+		System.out.println("===>" + chamado.getStatus());
+		if (chamado.getStatus() != null) {
+			String[] itens = cmbStatus.getItems();
+			for (int i = 0; i < itens.length; i++) {
+				System.out.println(itens[i]);
+				if (itens[i].equals(getStatus(chamado.getStatus()))) {
+					cmbStatus.select(i);
+					System.out.println(i);
 					break;
 				}
 			}
@@ -433,8 +452,8 @@ public class TelaChamado {
 	}
 
 	public void checkStatus() {
-		if (chamado.getStatus().equals(Chamado.STATUS_EM_ATENDIMENTO)
-				&& getStatus().equals(Chamado.STATUS_FECHADO)) {
+		System.out.println("status:" + getStatus());
+		if (getStatus().equals(Chamado.STATUS_FECHADO)) {
 			TratarEventos.terminarAtendimentoChamado(chamado);
 
 		} else if (getStatus().equals(Chamado.STATUS_EM_ATENDIMENTO)) {

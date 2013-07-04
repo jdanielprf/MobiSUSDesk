@@ -1,11 +1,15 @@
 package br.ufma.lsd.mobileSUS.mobha;
 
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 import org.eclipse.swt.widgets.Display;
 
@@ -14,18 +18,43 @@ import br.ufma.lsd.mobileSUS.entidades.Msg;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 import br.ufma.lsd.mobileSUS.telas.ControllerTelasAbertas;
 import br.ufma.lsd.mobileSUS.telas.TelaPrincipal;
-import br.ufma.lsd.mobileSUS.telas.help.Sessao;
+import br.ufma.lsd.mobileSUS.telas.help.DAO;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class LogicaProcessamento {
-	private Sessao s = TratarEventos.sessao;
+	private DAO s = TratarEventos.sessao;
 	public String pasta = "arquivos/";
+	private boolean check=false;
+	public void init() {
+		 
+		Thread tr = new Thread(new Runnable() {
 
-	public void init(){
-		processarChat();
-		processarRecebimentoInfoContexto();
-	}
+			@Override
+			public void run() {
+				System.out.println("Conectando...");
+				processarChat();
+				processarRecebimentoInfoContexto();
+				check=true;
+				System.out.println("Conectado");
+			}
+		});
+		tr.start();
+		
 	
+		ActionListener action = new ActionListener() {  
+            public void actionPerformed(java.awt.event.ActionEvent e) {  
+            	if(!check){
+            		JOptionPane.showMessageDialog(null, "Não foi possivel estabelecer conexao com o servidor!");
+            	}
+                
+            }  
+        }; 
+        
+        Timer t = new Timer(4*1000, action);
+        t.setRepeats(false);
+		t.start();
+	}
+
 	public void processarChat() {
 		List<Usuario> listaUsuarios = s.getUsuarios();
 		for (Iterator<Usuario> iterator = listaUsuarios.iterator(); iterator
@@ -42,7 +71,8 @@ public class LogicaProcessamento {
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							TelaPrincipal.window
-									.carregarTabelaUsuarios(TratarEventos.sessao.getUsuarios());
+									.carregarTabelaUsuarios(TratarEventos.sessao
+											.getUsuarios());
 							ControllerTelasAbertas.chatInvocar(usuario, msg);
 						}
 					});
@@ -138,8 +168,10 @@ public class LogicaProcessamento {
 			c.setDescricao(s.nextLine());
 			c.setStatus(s.nextLine());
 			c.setRelatorio(s.nextLine());
+			s.close();
 			return c;
 		}
+		s.close();
 		return null;
 	}
 

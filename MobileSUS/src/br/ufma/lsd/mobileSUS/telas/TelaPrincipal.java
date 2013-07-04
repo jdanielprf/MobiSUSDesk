@@ -101,7 +101,7 @@ public class TelaPrincipal {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shell = new Shell();
+		shell =  new Shell( SWT.CLOSE | SWT.TITLE | SWT.MIN);
 		shell.setSize(800, 800);
 		shell.setText("MOBISUS");
 

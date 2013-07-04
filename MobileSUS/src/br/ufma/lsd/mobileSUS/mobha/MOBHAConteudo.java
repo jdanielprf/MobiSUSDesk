@@ -8,6 +8,7 @@ import java.io.InputStream;
 
 import br.ufma.lsd.mbhealthnet.android.mobha.content.MOBHAContentImpl;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentDownloadRequest;
+import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentDownloadResponse;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentFile;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentMetaData;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentSearchByMetaData;
@@ -19,14 +20,12 @@ import br.ufma.lsd.mbhealthnet.communication.pubsub.PubSubTopicListener;
 public class MOBHAConteudo {
 	private static String userCentral="felipe";
 	private static MOBHAContentImpl contService;
-	private static LogicaProcessamento processamento;
-	
 	public static void main(String[] args) {
 		init();
 	//	upload(userCentral,"sadfasdfasdf".getBytes());
-		download(userCentral, "11");
+	//	download("e1u1", "5");
 		
-	//	listarDiretorio();
+		listarDiretorio();
 		System.out.println("Fim");
 	}
 	public static void init() {
@@ -47,6 +46,10 @@ public class MOBHAConteudo {
 					if(o instanceof GenericInformation){
 						GenericInformation g=(GenericInformation)o;
 						System.out.println(g.message);
+					}else if(o instanceof ContentDownloadResponse){
+						ContentDownloadResponse resposta = (ContentDownloadResponse)o;
+						System.out.println(new String(resposta.contentFile.contentFile));
+						;
 					}
 				}
 			});
@@ -73,7 +76,6 @@ public class MOBHAConteudo {
 	}
 	
 	public static void registrar(LogicaProcessamento logica) {
-		processamento=logica;
 	}
 	
 	public static void upload(String id,byte[] dados){
@@ -118,7 +120,7 @@ public class MOBHAConteudo {
 		list[1]="name";
 		
 		String list2[]=new String[2];
-		list2[0]="/home/gateway";
+		list2[0]="/home/gateway/e1";
 		list2[1]="e1";
 		
 		cont.fromUserName=userCentral;
@@ -127,7 +129,7 @@ public class MOBHAConteudo {
 		
 	
 		try{
-			contService.searchContentbyFullName(cont);
+			contService.searchContentByMetadata(cont);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

@@ -8,7 +8,7 @@ import br.ufma.lsd.mobileSUS.entidades.Msg;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
 
 public class TratarEventos {
-	public static Sessao sessao = new Sessao();
+	public static DAO sessao = new DAO();
 
 	public static void addChamado(Chamado c) {
 		sessao.addChamado(c);
@@ -85,8 +85,8 @@ public class TratarEventos {
 	}
 
 	public static void testar() {
-		double lat = -2.5164330206204784;
-		double log = -44.30511474609375;
+//		double lat = -2.5164330206204784;
+//		double log = -44.30511474609375;
 
 //		for (int i = 1; i <= 2; i++) {
 //
