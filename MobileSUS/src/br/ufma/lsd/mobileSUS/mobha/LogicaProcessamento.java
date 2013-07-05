@@ -24,9 +24,10 @@ import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 public class LogicaProcessamento {
 	private DAO s = TratarEventos.sessao;
 	public String pasta = "arquivos/";
-	private boolean check=false;
+	private boolean check = false;
+
 	public void init() {
-		 
+
 		Thread tr = new Thread(new Runnable() {
 
 			@Override
@@ -34,24 +35,25 @@ public class LogicaProcessamento {
 				System.out.println("Conectando...");
 				processarChat();
 				processarRecebimentoInfoContexto();
-				check=true;
+				check = true;
 				System.out.println("Conectado");
 			}
 		});
 		tr.start();
-		
-	
-		ActionListener action = new ActionListener() {  
-            public void actionPerformed(java.awt.event.ActionEvent e) {  
-            	if(!check){
-            		JOptionPane.showMessageDialog(null, "Não foi possivel estabelecer conexao com o servidor!");
-            	}
-                
-            }  
-        }; 
-        
-        Timer t = new Timer(4*1000, action);
-        t.setRepeats(false);
+
+		ActionListener action = new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				if (!check) {
+					JOptionPane
+							.showMessageDialog(null,
+									"Não foi possivel estabelecer conexao com o servidor!");
+				}
+
+			}
+		};
+
+		Timer t = new Timer(4 * 1000, action);
+		t.setRepeats(false);
 		t.start();
 	}
 
@@ -70,9 +72,9 @@ public class LogicaProcessamento {
 
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							TelaPrincipal.window
-									.carregarTabelaUsuarios(TratarEventos.sessao
-											.getUsuarios());
+//							TelaPrincipal.window
+//									.carregarTabelaUsuarios(TratarEventos.sessao
+//											.getUsuarios());
 							ControllerTelasAbertas.chatInvocar(usuario, msg);
 						}
 					});
@@ -135,8 +137,21 @@ public class LogicaProcessamento {
 
 						@Override
 						public void receberCoordenadas(String lat, String log) {
-							usuario.setLatitude(lat);
-							usuario.setLongitude(log);
+
+							if (!(usuario.getLatitude() == lat && usuario.getLongitude() == log)) {
+
+								usuario.setLatitude(lat);
+								usuario.setLongitude(log);
+								Display.getDefault().asyncExec(new Runnable() {
+									public void run() {
+										TelaPrincipal.window
+												.carregarTabelaUsuarios(TratarEventos.sessao
+														.getUsuarios());
+									}
+								});
+
+							}
+
 						}
 					}, usuario.getId());
 		}

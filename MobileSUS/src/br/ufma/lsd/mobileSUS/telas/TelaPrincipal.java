@@ -56,7 +56,7 @@ public class TelaPrincipal {
 	public static void main(String[] args) {
 		try {
 			lerID();
-			TratarEventos.testar();
+		//	TratarEventos.testar();
 
 			window = new TelaPrincipal();
 			window.open();

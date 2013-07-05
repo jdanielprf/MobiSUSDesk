@@ -6,11 +6,15 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import org.eclipse.swt.widgets.Display;
+
 import br.lsd.ufma.mbhealth.server.MobileDDSConnection;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContextInformation;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContextInformationSubscribe;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.GenericInformation;
 import br.ufma.lsd.mbhealthnet.communication.pubsub.PubSubTopicListener;
+import br.ufma.lsd.mobileSUS.telas.TelaPrincipal;
+import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class MOBHAContexto {
 	private static String nome = MOBHAUtil.central;
@@ -32,9 +36,11 @@ public class MOBHAContexto {
 			if (cal != null){
 				cal.receberCoordenadas(g.informationValues[3],
 						g.informationValues[1]);
+
 			}else{
 				System.out.println("nao encontrado");
 			}
+			
 		} else if (o instanceof GenericInformation) {
 			GenericInformation g = (GenericInformation) o;
 			System.out.println(g.message);

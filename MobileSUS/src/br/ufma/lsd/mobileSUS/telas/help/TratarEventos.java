@@ -67,11 +67,14 @@ public class TratarEventos {
 
 	public static boolean iniciarAtendimentoChamado(Usuario u, Chamado c) {
 		if (u.getChamado() == null) {
-			if (c.getResponsavel() != null)
-				c.getResponsavel().setChamado(null);
 			c.setResponsavel(u);
 			u.setChamado(c);
 			return true;
+		}else if(u.getChamado().getId()==c.getId()){
+			System.out.println("ja estar alocado ao chamado");
+			return true;
+		}else{
+			System.out.println("a unidade ja estar em atendimento");
 		}
 
 		return false;

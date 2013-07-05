@@ -3,6 +3,8 @@ package br.ufma.lsd.mobileSUS.mobha;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -16,14 +18,16 @@ import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentUploadRequest;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.GenericInformation;
 import br.ufma.lsd.mbhealthnet.communication.exception.DomainParticipantNotCreatedException;
 import br.ufma.lsd.mbhealthnet.communication.pubsub.PubSubTopicListener;
+import br.ufma.lsd.mobileSUS.telas.help.DAO;
+import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class MOBHAConteudo {
-	private static String userCentral="felipe";
+	private static String userCentral=MOBHAUtil.central;
 	private static MOBHAContentImpl contService;
 	public static void main(String[] args) {
 		init();
 	//	upload(userCentral,"sadfasdfasdf".getBytes());
-	//	download("e1u1", "5");
+		download("e1u2", "13");
 		
 		listarDiretorio();
 		System.out.println("Fim");
@@ -48,8 +52,7 @@ public class MOBHAConteudo {
 						System.out.println(g.message);
 					}else if(o instanceof ContentDownloadResponse){
 						ContentDownloadResponse resposta = (ContentDownloadResponse)o;
-						System.out.println(new String(resposta.contentFile.contentFile));
-						;
+						salvarArquivo(resposta.contentFile.contentFile, TratarEventos.sessao.getDir() +"/temp/"+resposta.contentId+".png");	
 					}
 				}
 			});
@@ -102,7 +105,7 @@ public class MOBHAConteudo {
 		ContentDownloadRequest cont=new ContentDownloadRequest();
 		cont.fromUserName=id;
 		cont.contentId=idContent;
-	
+		
 		try{
 			contService.downloadContentFile(cont);
 		}catch(Exception e){
@@ -120,8 +123,8 @@ public class MOBHAConteudo {
 		list[1]="name";
 		
 		String list2[]=new String[2];
-		list2[0]="/home/gateway/e1";
-		list2[1]="e1";
+		list2[0]="/home/gateway/e1/";
+		list2[1]="teste2.txt";
 		
 		cont.fromUserName=userCentral;
 		cont.metadaDataName=list;
@@ -133,6 +136,19 @@ public class MOBHAConteudo {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	public static void salvarArquivo(byte[] dados, String localizacao){
+		try {
+			File file=new File(localizacao).getParentFile();
+			file.mkdirs();
+			FileOutputStream f=new FileOutputStream(localizacao);
+			f.write(dados);
+			f.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 }

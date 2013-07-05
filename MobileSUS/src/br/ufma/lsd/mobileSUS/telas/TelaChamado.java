@@ -373,7 +373,7 @@ public class TelaChamado {
 		shlChamado.dispose();
 	}
 
-	public String getStatus() {
+	public String getStatusTelaChamado() {
 		if (cmbStatus.getSelectionIndex() >= 0) {
 			String status = cmbStatus.getItem(cmbStatus.getSelectionIndex());
 			if (status.equals("Criado")) {
@@ -387,7 +387,7 @@ public class TelaChamado {
 		return Chamado.STATUS_INDETERMINADO;
 	}
 
-	public String getStatus(String status) {
+	public String getStatusChamado(String status) {
 		if (status != null) {
 			if (status.equals(Chamado.STATUS_ABERTO)) {
 				return "Criado";
@@ -433,7 +433,7 @@ public class TelaChamado {
 			String[] itens = cmbStatus.getItems();
 			for (int i = 0; i < itens.length; i++) {
 				System.out.println(itens[i]);
-				if (itens[i].equals(getStatus(chamado.getStatus()))) {
+				if (itens[i].equals(getStatusChamado(chamado.getStatus()))) {
 					cmbStatus.select(i);
 					System.out.println(i);
 					break;
@@ -452,11 +452,11 @@ public class TelaChamado {
 	}
 
 	public void checkStatus() {
-		System.out.println("status:" + getStatus());
-		if (getStatus().equals(Chamado.STATUS_FECHADO)) {
+		System.out.println("status:" + getStatusTelaChamado());
+		if (getStatusTelaChamado().equals(Chamado.STATUS_FECHADO)) {
 			TratarEventos.terminarAtendimentoChamado(chamado);
 
-		} else if (getStatus().equals(Chamado.STATUS_EM_ATENDIMENTO)) {
+		} else if (getStatusTelaChamado().equals(Chamado.STATUS_EM_ATENDIMENTO)) {
 			Usuario u = null;
 			if (cmbResponsavel.getSelectionIndex() >= 0) {
 				String userName = cmbResponsavel.getItem(cmbResponsavel
@@ -477,7 +477,7 @@ public class TelaChamado {
 					.setMessage("Não foi possivel alocar a unidade movel ao chamado");
 			messagebox.open();
 		}
-		System.out.println(getStatus());
+		System.out.println(getStatusTelaChamado());
 	}
 
 }

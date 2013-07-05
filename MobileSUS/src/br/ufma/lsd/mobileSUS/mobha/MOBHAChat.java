@@ -53,6 +53,8 @@ public class MOBHAChat {
 		Usuario u=TratarEventos.buscarUsuario(id);
 		if(u!=null&&u.getChamado()!=null){
 			TelaPrincipal.getProcessamento().enviarChamado(u.getChamado());
+		}else{
+			System.out.println("Sem chamados para "+id);
 		}
 	}
 	public static void cancelar() {
