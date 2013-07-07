@@ -101,16 +101,16 @@ public class TelaListaChamados {
 			TableItem item = new TableItem(table, SWT.NONE);
 			item.setText(0, "" + c.getId());
 			if (c.getResponsavel() != null){
-				item.setText(2,c.getResponsavel().getNome());
+				item.setText(1,c.getResponsavel().getNome());
 			}else {
-				item.setText(2, "");
+				item.setText(1, "");
 			}
 			if (c.getStatus() != null)
-				item.setText(3, "" + c.getStatus());
+				item.setText(2, "" + c.getStatus());
 			if (c.getLatitude() != null)
-				item.setText(4, "" + c.getLatitude());
+				item.setText(3, "" + c.getLatitude());
 			if (c.getLongitude() != null)
-				item.setText(5, "" + c.getLongitude());
+				item.setText(4, "" + c.getLongitude());
 
 		}
 		for (int i = 0; i < table.getColumns().length; i++) {

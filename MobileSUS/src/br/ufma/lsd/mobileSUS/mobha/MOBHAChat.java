@@ -16,7 +16,7 @@ import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class MOBHAChat {
 	private static String nome = MOBHAUtil.central;
-	private static String receber = "e1u1";
+	private static String receber = "e1u2" ;
 	private static br.ufma.lsd.mbhealthnet.android.mobha.chat.MOBHAChat chatService;
 	private static HashMap<String,InterfaceChat> lista=new HashMap<String,InterfaceChat>();
 
@@ -107,8 +107,8 @@ public class MOBHAChat {
 	}
 	
 	public static void main(String[] args) {
-		MOBHAChat.nome="e1u2";
-		MOBHAChat.receber = "e1u1";
+		MOBHAChat.nome="e1u1";
+		MOBHAChat.receber = "e1u2";
 		MOBHAChat.init();
 		MOBHAChat.enviar("dados", receber);
 	}

@@ -6,22 +6,16 @@
 		<class>br.ufma.lsd.mobileSUS.entidades.Chamado</class>
 		<class>br.ufma.lsd.mobileSUS.entidades.Usuario</class>
 
+
 		<properties>
-            <!-- DADOS CONEXAO -->  
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />  
-            <property name="hibernate.connection.username" value="root" />  
-            <property name="hibernate.connection.password" value="root" />  
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/sus" />  
-
-
-            <!-- CONFIGURACAO -->  
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />  
-            <property name="hibernate.hbm2ddl.auto" value="none" />  
-            <property name="hibernate.show_sql" value="false" />  
-            <property name="hibernate.format_sql" value="false" />  
-            <property name="hibernate.archive.autodetection" value="class" />  
-
+			<property name="hibernate.dialect" value="br.ufma.lsd.mobileSUS.util.SQLiteDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="javax.persistence.jdbc.driver" value="org.sqlite.JDBC" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:sqlite:sus.db" />
 		</properties>
+
 	</persistence-unit>
 
 </persistence> 

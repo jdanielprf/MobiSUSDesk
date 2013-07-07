@@ -56,7 +56,7 @@ public class TelaPrincipal {
 	public static void main(String[] args) {
 		try {
 			lerID();
-		//	TratarEventos.testar();
+			TratarEventos.testar();
 
 			window = new TelaPrincipal();
 			window.open();
@@ -343,11 +343,15 @@ public class TelaPrincipal {
 	void criarListaChamados(final List lista,
 			final java.util.List<Chamado> chamados) {
 		lista.removeAll();
+		
 		for (Iterator<Chamado> iterator = chamados.iterator(); iterator
 				.hasNext();) {
 			Chamado c = (Chamado) iterator.next();
+			if(!c.getStatus().equals(Chamado.STATUS_FECHADO))
 			lista.add(c.toString());
 		}
+		
+		
 		lista.addMouseListener(new MouseListener() {
 
 			@Override

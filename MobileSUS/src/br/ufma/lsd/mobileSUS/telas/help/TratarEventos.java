@@ -70,10 +70,10 @@ public class TratarEventos {
 			c.setResponsavel(u);
 			u.setChamado(c);
 			return true;
-		}else if(u.getChamado().getId()==c.getId()){
+		} else if (u.getChamado().getId() == c.getId()) {
 			System.out.println("ja estar alocado ao chamado");
 			return true;
-		}else{
+		} else {
 			System.out.println("a unidade ja estar em atendimento");
 		}
 
@@ -81,33 +81,38 @@ public class TratarEventos {
 	}
 
 	public static boolean terminarAtendimentoChamado(Chamado c) {
-		c.getResponsavel().setChamado(null);
+		if (c.getResponsavel() != null) {
+			c.getResponsavel().setChamado(null);
+
+		}
 		c.setStatus(Chamado.STATUS_FECHADO);
 		return true;
 
 	}
 
 	public static void testar() {
-//		double lat = -2.5164330206204784;
-//		double log = -44.30511474609375;
+		// double lat = -2.5164330206204784;
+		// double log = -44.30511474609375;
 
-//		for (int i = 1; i <= 2; i++) {
-//
-//			Chamado chamado = new Chamado();
-//			chamado.setDescricao("descricao " + i);
-//			chamado.setLatitude("" + (lat + (i / 10000.0)));
-//			chamado.setLongitude("" + (log + (i / 10000.0)));
-//			chamado.setId( i);
-//			addChamado(chamado);
-//		}
+		// for (int i = 1; i <= 2; i++) {
+		//
+		// Chamado chamado = new Chamado();
+		// chamado.setDescricao("descricao " + i);
+		// chamado.setLatitude("" + (lat + (i / 10000.0)));
+		// chamado.setLongitude("" + (log + (i / 10000.0)));
+		// chamado.setId( i);
+		// addChamado(chamado);
+		// }
 
-		for (int i = 1; i <= 10; i++) {
-			Usuario u = new Usuario();
-			u.setId("e1u" + i);
-			u.setNome("e1u" + i);
-		//	u.setLatitude("" + (lat + (i / 1000.0)));
-		//	u.setLongitude("" + (log + (i / 1000.0)));
-			addUsuario(u);
+		if (TratarEventos.sessao.getUsuarios().size() <= 0) {
+			for (int i = 1; i <= 10; i++) {
+				Usuario u = new Usuario();
+				u.setId("e1u" + i);
+				u.setNome("e1u" + i);
+				// u.setLatitude("" + (lat + (i / 1000.0)));
+				// u.setLongitude("" + (log + (i / 1000.0)));
+				addUsuario(u);
+			}
 		}
 	}
 
