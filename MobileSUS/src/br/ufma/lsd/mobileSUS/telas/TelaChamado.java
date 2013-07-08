@@ -171,6 +171,7 @@ public class TelaChamado {
 				false, 4, 1));
 
 		Button btnAlocarUnidadeMovel = new Button(shlChamado, SWT.NONE);
+		btnAlocarUnidadeMovel.setEnabled(false);
 		btnAlocarUnidadeMovel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
 				false, false, 1, 1));
 		btnAlocarUnidadeMovel.addSelectionListener(new SelectionAdapter() {
@@ -247,9 +248,11 @@ public class TelaChamado {
 
 		Button btnNewButton = new Button(shlChamado, SWT.NONE);
 		btnNewButton.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseDown(MouseEvent arg0) {
 				salvarChamado();
+			
 			}
 		});
 		btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
@@ -262,7 +265,8 @@ public class TelaChamado {
 			@Override
 			public void widgetDisposed(DisposeEvent arg0) {
 				ControllerTelasAbertas.fecharChamado(chamado);
-				shlChamado.close();
+				// shlChamado.close();
+
 				System.out.println("fechar");
 			}
 		});
@@ -327,7 +331,8 @@ public class TelaChamado {
 			Usuario usuario = (Usuario) iterator.next();
 			if (usuario.getChamado() == null)
 				cmbResponsavel.add(usuario.toString());
-			else if (chamado!=null&&chamado.getResponsavel() != null&&chamado.getResponsavel().getId().equals(usuario.getId()))
+			else if (chamado != null && chamado.getResponsavel() != null
+					&& chamado.getResponsavel().getId().equals(usuario.getId()))
 				cmbResponsavel.add(usuario.toString());
 		}
 	}
@@ -349,7 +354,7 @@ public class TelaChamado {
 
 		if (chamado.getId() == null) {
 			chamado.setId(new Random().nextInt(Integer.MAX_VALUE));
-			TratarEventos.addChamado(chamado);
+		//	TratarEventos.addChamado(chamado);
 		}
 
 		if (cmbStatus.getSelectionIndex() >= 0) {
@@ -368,6 +373,8 @@ public class TelaChamado {
 		} else {
 			TelaPrincipal.getProcessamento().enviarChamado(chamado);
 		}
+		System.out.println("camado" + chamado);
+		System.out.println("usuario" + chamado.getResponsavel());
 		TratarEventos.sessao.salvar(chamado);
 		TelaPrincipal.window.carregarDados();
 		shlChamado.dispose();

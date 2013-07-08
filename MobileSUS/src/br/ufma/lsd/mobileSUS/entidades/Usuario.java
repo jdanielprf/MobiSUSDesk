@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
-@Entity
+@Entity()
 public class Usuario {
 	private String nome;
 	@Id
@@ -14,8 +14,10 @@ public class Usuario {
 	private String latitude=null;
 	@Transient
 	private String longitude=null;
-	@OneToOne
+	
+	@OneToOne()
 	private Chamado chamado;
+	
 	public Usuario(){}
 	
 	public Usuario(String nome){
@@ -61,7 +63,7 @@ public class Usuario {
 	public String toString() {
 		return nome;
 	}
-
+	@Transient
 	public Chamado getChamado() {
 		return chamado;
 	}

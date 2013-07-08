@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,7 +17,6 @@ import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentUploadRequest;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.GenericInformation;
 import br.ufma.lsd.mbhealthnet.communication.exception.DomainParticipantNotCreatedException;
 import br.ufma.lsd.mbhealthnet.communication.pubsub.PubSubTopicListener;
-import br.ufma.lsd.mobileSUS.telas.help.DAO;
 import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class MOBHAConteudo {

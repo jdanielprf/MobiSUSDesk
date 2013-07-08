@@ -31,11 +31,13 @@ public class DAO {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Chamado> getChamados() {
 		javax.persistence.Query query = em.createQuery("FROM Chamado");       
 		return query.getResultList(); 
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Chamado> getTodosChamados() {
 		javax.persistence.Query query = em.createQuery("FROM Chamado c WHERE c.status<>'FECHADO'");       
 		return query.getResultList(); 
@@ -51,6 +53,7 @@ public class DAO {
 
 
 
+	@SuppressWarnings("unchecked")
 	public List<Usuario> getUsuarios() {
 		javax.persistence.Query query = em.createQuery("FROM Usuario u");       
 		return query.getResultList(); 
@@ -132,7 +135,7 @@ public class DAO {
 	
 	public Usuario buscarUsuario(String idUsuario) {
 		List<Usuario> lista = getUsuarios();
-		for (Iterator iterator = lista.iterator(); iterator.hasNext();) {
+		for (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();) {
 			Usuario usuario = (Usuario) iterator.next();
 			if(usuario.getId()==idUsuario){
 				return usuario;

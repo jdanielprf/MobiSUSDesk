@@ -6,15 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.eclipse.swt.widgets.Display;
-
 import br.lsd.ufma.mbhealth.server.MobileDDSConnection;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContextInformation;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContextInformationSubscribe;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.GenericInformation;
 import br.ufma.lsd.mbhealthnet.communication.pubsub.PubSubTopicListener;
-import br.ufma.lsd.mobileSUS.telas.TelaPrincipal;
-import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class MOBHAContexto {
 	private static String nome = MOBHAUtil.central;

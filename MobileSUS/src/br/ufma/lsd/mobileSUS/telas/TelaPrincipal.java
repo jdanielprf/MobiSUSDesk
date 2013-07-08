@@ -243,6 +243,14 @@ public class TelaPrincipal {
 		shell.addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent arg0) {
+				System.out.println("Salvando  banco");
+				/*
+				try{
+				MOBHAConteudo.upload("sus.sql", Utilidade.lerArquivo("sus.db").getBytes());
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				*/
 				System.exit(0);
 			}
 		});

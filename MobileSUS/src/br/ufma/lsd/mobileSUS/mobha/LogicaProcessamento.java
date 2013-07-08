@@ -195,6 +195,7 @@ public class LogicaProcessamento {
 		if (c != null) {
 			Chamado c2 = TratarEventos.buscarChamado(c.getId());
 			c2.setRelatorio(c.getRelatorio());
+			c2.setStatus(Chamado.STATUS_FECHADO);
 			c2.getResponsavel().setChamado(null);
 		}
 	}

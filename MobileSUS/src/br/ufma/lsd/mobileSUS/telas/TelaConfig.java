@@ -132,7 +132,7 @@ public class TelaConfig {
 			if(inp.hasNextLine()){
 				textPorta.setText(inp.nextLine());
 			}
-			
+			inp.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -142,6 +142,7 @@ public class TelaConfig {
 			if(inp.hasNextLine()){
 				textID.setText(inp.nextLine());
 			}
+			inp.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
