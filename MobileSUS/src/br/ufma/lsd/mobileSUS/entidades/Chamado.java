@@ -24,7 +24,7 @@ public class Chamado {
 	private String longitude;
 	private String status = STATUS_ABERTO;
 
-	private Date data;
+	private String data;
 	@OneToOne(cascade = CascadeType.ALL)
 	private Usuario responsavel;
 	private String relatorio;
@@ -77,11 +77,11 @@ public class Chamado {
 		this.id = id;
 	}
 
-	public Date getData() {
+	public String getData() {
 		return data;
 	}
 
-	public void setData(Date data) {
+	public void setData(String data) {
 		this.data = data;
 	}
 

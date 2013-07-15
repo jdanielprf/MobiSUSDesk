@@ -44,6 +44,7 @@ public class TelaChamado {
 	private Combo cmbStatus;
 	private Combo cmbResponsavel;
 	protected TelaArquivos tetlaArquivos;
+	private Text    txtRelatorio;
 
 	/**
 	 * Launch the application.
@@ -90,9 +91,9 @@ public class TelaChamado {
 				| SWT.TITLE | SWT.MIN);
 
 		shlChamado.setMinimumSize(new Point(452, 392));
-		shlChamado.setSize(452, 392);
+		shlChamado.setSize(511, 642);
 		shlChamado.setText("Chamado");
-		shlChamado.setLayout(new GridLayout(7, false));
+		shlChamado.setLayout(new GridLayout(8, false));
 
 		Label lblId = new Label(shlChamado, SWT.NONE);
 		lblId.setText("ID:");
@@ -107,6 +108,7 @@ public class TelaChamado {
 		new Label(shlChamado, SWT.NONE);
 		new Label(shlChamado, SWT.NONE);
 		new Label(shlChamado, SWT.NONE);
+		new Label(shlChamado, SWT.NONE);
 
 		Label lblDescrio = new Label(shlChamado, SWT.NONE);
 		lblDescrio.setText("Descri\u00E7\u00E3o:");
@@ -116,9 +118,10 @@ public class TelaChamado {
 		new Label(shlChamado, SWT.NONE);
 		new Label(shlChamado, SWT.NONE);
 		new Label(shlChamado, SWT.NONE);
+		new Label(shlChamado, SWT.NONE);
 
 		textDescricao = new Text(shlChamado, SWT.MULTI);
-		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, true, 7,
+		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, true, 8,
 				1);
 		gridData.minimumHeight = 100;
 		textDescricao.setLayoutData(gridData);
@@ -126,11 +129,26 @@ public class TelaChamado {
 		gridData.verticalAlignment = GridData.FILL;
 		gridData.grabExcessHorizontalSpace = true;
 
+		Label lblRelatorio = new Label(shlChamado, SWT.NONE);
+		lblRelatorio.setText("Relatorio:");
+		new Label(shlChamado, SWT.NONE);
+		new Label(shlChamado, SWT.NONE);
+		new Label(shlChamado, SWT.NONE);
+		new Label(shlChamado, SWT.NONE);
+		new Label(shlChamado, SWT.NONE);
+		new Label(shlChamado, SWT.NONE);
+		new Label(shlChamado, SWT.NONE);
+
+	    txtRelatorio = new Text(shlChamado, SWT.MULTI);
+		txtRelatorio.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
+				8, 1));
+
 		Label lblLatitude = new Label(shlChamado, SWT.NONE);
 		lblLatitude.setText("Latitude:");
 		new Label(shlChamado, SWT.NONE);
 
 		textLat = new Text(shlChamado, SWT.BORDER);
+		new Label(shlChamado, SWT.NONE);
 		new Label(shlChamado, SWT.NONE);
 
 		Label lblLongitude = new Label(shlChamado, SWT.NONE);
@@ -168,17 +186,13 @@ public class TelaChamado {
 			}
 		});
 		cmbResponsavel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 4, 1));
+				false, 5, 1));
 
 		Button btnAlocarUnidadeMovel = new Button(shlChamado, SWT.NONE);
 		btnAlocarUnidadeMovel.setEnabled(false);
 		btnAlocarUnidadeMovel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
 				false, false, 1, 1));
-		btnAlocarUnidadeMovel.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-			}
-		});
+	
 		btnAlocarUnidadeMovel.setText("?");
 
 		Label lblSituao = new Label(shlChamado, SWT.NONE);
@@ -194,7 +208,7 @@ public class TelaChamado {
 		cmbStatus
 				.setItems(new String[] { "Criado", "Em andamento", "Concluido" });
 		cmbStatus.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				5, 1));
+				6, 1));
 
 		Label lblData = new Label(shlChamado, SWT.NONE);
 		lblData.setText("Data:");
@@ -202,7 +216,7 @@ public class TelaChamado {
 
 		dateTime = new DateTime(shlChamado, SWT.BORDER);
 		dateTime.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
-				5, 1));
+				6, 1));
 
 		Button btnCancelar = new Button(shlChamado, SWT.NONE);
 		btnCancelar.addMouseListener(new MouseAdapter() {
@@ -222,6 +236,15 @@ public class TelaChamado {
 			}
 		});
 		btnRemover.setText("Remover");
+		
+		Button btnRota = new Button(shlChamado, SWT.NONE);
+		btnRota.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+				new TelaRota(chamado).open();
+			}
+		});
+		btnRota.setText("Rota");
 		new Label(shlChamado, SWT.NONE);
 
 		Button btnArquivos = new Button(shlChamado, SWT.NONE);
@@ -231,13 +254,12 @@ public class TelaChamado {
 				if (chamado.getId() != null) {
 					String diretorio = TratarEventos.sessao.getDir()
 							+ chamado.getId() + "/";
-					if (!TelaArquivos.checkArquivos(diretorio)) {
-						JOptionPane.showMessageDialog(null,
-								"Não existe nenhum arquivo para este chamado");
-					} else if (tetlaArquivos == null) {
-						tetlaArquivos = new TelaArquivos(diretorio);
+					 if (tetlaArquivos == null) {
+						tetlaArquivos = new TelaArquivos(diretorio, ""
+								+ chamado.getId());
 					} else if (tetlaArquivos.fechado()) {
-						tetlaArquivos = new TelaArquivos(diretorio);
+						tetlaArquivos = new TelaArquivos(diretorio, ""
+								+ chamado.getId());
 					} else {
 						tetlaArquivos.focus();
 					}
@@ -252,7 +274,7 @@ public class TelaChamado {
 			@Override
 			public void mouseDown(MouseEvent arg0) {
 				salvarChamado();
-			
+
 			}
 		});
 		btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
@@ -264,13 +286,15 @@ public class TelaChamado {
 
 			@Override
 			public void widgetDisposed(DisposeEvent arg0) {
+				TelaPrincipal.window.limpar();
 				ControllerTelasAbertas.fecharChamado(chamado);
+				ControllerTelasAbertas.fecharChamado(TelaChamado.this);
 				// shlChamado.close();
-
+				
 				System.out.println("fechar");
 			}
 		});
-
+		txtRelatorio.setEnabled(false);
 		carregarListaUsuarios();
 		carregar();
 		if (chamado != null) {
@@ -350,11 +374,11 @@ public class TelaChamado {
 		data.setMonth(dateTime.getMonth());
 		data.setYear(dateTime.getYear());
 
-		chamado.setData(data);
+		chamado.setData(data.toString());
 
 		if (chamado.getId() == null) {
 			chamado.setId(new Random().nextInt(Integer.MAX_VALUE));
-		//	TratarEventos.addChamado(chamado);
+			// TratarEventos.addChamado(chamado);
 		}
 
 		if (cmbStatus.getSelectionIndex() >= 0) {
@@ -375,9 +399,12 @@ public class TelaChamado {
 		}
 		System.out.println("camado" + chamado);
 		System.out.println("usuario" + chamado.getResponsavel());
+		
+		shlChamado.dispose();
 		TratarEventos.sessao.salvar(chamado);
 		TelaPrincipal.window.carregarDados();
-		shlChamado.dispose();
+		
+		
 	}
 
 	public String getStatusTelaChamado() {
@@ -415,12 +442,14 @@ public class TelaChamado {
 		textLat.setText("" + chamado.getLatitude());
 		textLong.setText("" + chamado.getLongitude());
 		textID.setText("" + chamado.getId());
-		Date data = chamado.getData();
-		if (data != null) {
-			dateTime.setDay(data.getDay());
-			dateTime.setMonth(data.getMonth());
-			dateTime.setYear(data.getYear());
-		}
+		if (chamado.getRelatorio() != null)
+			txtRelatorio.setText("" + chamado.getRelatorio());
+//		Date data = chamado.getData();
+//		if (data != null) {
+//			dateTime.setDay(data.getDay());
+//			dateTime.setMonth(data.getMonth());
+//			dateTime.setYear(data.getYear());
+//		}
 
 		System.out.println("==>" + chamado.getResponsavel());
 		if (chamado.getResponsavel() != null) {

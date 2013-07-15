@@ -42,6 +42,7 @@ public class TelaPrincipal {
 	private List list;
 	public static TelaPrincipal window = null;
 	private TelaListaChamados tela;
+	private java.util.List<Chamado> listaChamados;
 	private static LogicaProcessamento processamento;
 
 	public static LogicaProcessamento getProcessamento() {
@@ -69,6 +70,7 @@ public class TelaPrincipal {
 	public void carregarDados() {
 		carregarTabelaUsuarios(TratarEventos.sessao.getUsuarios());
 		criarListaChamados(list, TratarEventos.sessao.getChamados());
+		
 	}
 
 	public void initProcessamentoInformacoesMBHealthNet() {
@@ -254,6 +256,37 @@ public class TelaPrincipal {
 				System.exit(0);
 			}
 		});
+		
+		list.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseUp(MouseEvent arg0) {
+			}
+
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+			}
+
+			@Override
+			public void mouseDoubleClick(MouseEvent arg0) {
+				try {
+					if (list.getSelectionIndex() >= 0) {
+						Chamado chamado = listaChamados.get(list
+								.getSelectionIndex());
+						System.out.println(chamado);
+						ControllerTelasAbertas.abrirChamado(chamado);
+					//	TelaChamado c = new TelaChamado(chamado);
+					//	c.open();
+						list.select(-1);
+			
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		
 
 		processarMapa();
 	}
@@ -347,10 +380,14 @@ public class TelaPrincipal {
 		}
 
 	}
+	public void limpar() {
+		list.select(-1);
+	}
 
 	void criarListaChamados(final List lista,
 			final java.util.List<Chamado> chamados) {
 		lista.removeAll();
+		listaChamados=chamados;
 		
 		for (Iterator<Chamado> iterator = chamados.iterator(); iterator
 				.hasNext();) {
@@ -358,39 +395,14 @@ public class TelaPrincipal {
 			if(!c.getStatus().equals(Chamado.STATUS_FECHADO))
 			lista.add(c.toString());
 		}
+		lista.select(-1);
 		
 		
-		lista.addMouseListener(new MouseListener() {
-
-			@Override
-			public void mouseUp(MouseEvent arg0) {
-			}
-
-			@Override
-			public void mouseDown(MouseEvent arg0) {
-			}
-
-			@Override
-			public void mouseDoubleClick(MouseEvent arg0) {
-				try {
-					if (lista.getSelectionIndex() >= 0) {
-						Chamado chamado = chamados.get(lista
-								.getSelectionIndex());
-						System.out.println(chamado);
-						TelaChamado c = new TelaChamado(chamado);
-						c.open();
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-
 	}
 
 	void criarTabelaUsuarios(final Table table) {
-		String[] titles = { "Unidade", "Nome", "Status", "Nº Ocorrencia",
-				"Localização" };
+		String[] titles = { "Unidade", "Nome", "Situação", "Nº Ocorrencia",
+				"Localização","Status" };
 		for (int i = 0; i < titles.length; i++) {
 			TableColumn column = new TableColumn(table, SWT.NONE);
 			column.setText(titles[i]);
@@ -424,23 +436,32 @@ public class TelaPrincipal {
 	public void carregarTabelaUsuarios(java.util.List<Usuario> lista) {
 		table.removeAll();
 		for (int i = 0; i < lista.size(); i++) {
-			Usuario c = lista.get(i);
+			Usuario u = lista.get(i);
 			TableItem item = new TableItem(table, SWT.NONE);
-			item.setText(0, "" + c.getId());
-			item.setText(1, "" + c.getNome());
-			if (c.getChamado() == null) {
-				item.setText(2, "Livre");
+			item.setText(0, "" + u.getId());
+			item.setText(1, "" + u.getNome());
+			
+			if (u.getChamado() == null) {
+			//	item.setText(2, "Livre");
 				item.setText(3, "");
 			} else {
-				item.setText(2, "Ocupado");
-				item.setText(3, "" + c.getChamado().getId());
+			//	item.setText(2, "Ocupado");
+				item.setText(3, "" + u.getChamado().getId());
 			}
-			if (c.getLatitude() != null && c.getLongitude() != null) {
-				item.setText(4, "(" + c.getLatitude() + "," + c.getLongitude()
+			
+			if(u.getStatus()!=null){
+				item.setText(2,u.getStatus());
+			}else{
+				item.setText(2, "?");
+			}
+			
+			if (u.getLatitude() != null && u.getLongitude() != null) {
+				item.setText(4, "(" + u.getLatitude() + "," + u.getLongitude()
 						+ ")");
 			} else {
 				item.setText(4, "(?,?)");
 			}
+			
 		}
 
 		for (int i = 0; i < table.getColumns().length; i++) {

@@ -137,7 +137,7 @@ public class DAO {
 		List<Usuario> lista = getUsuarios();
 		for (Iterator<Usuario> iterator = lista.iterator(); iterator.hasNext();) {
 			Usuario usuario = (Usuario) iterator.next();
-			if(usuario.getId()==idUsuario){
+			if(usuario.getId().equals(idUsuario)){
 				return usuario;
 			}
 		}

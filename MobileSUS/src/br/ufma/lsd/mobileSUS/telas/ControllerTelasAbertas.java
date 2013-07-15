@@ -2,6 +2,8 @@ package br.ufma.lsd.mobileSUS.telas;
 
 import java.util.HashMap;
 
+import org.eclipse.swt.events.DisposeListener;
+
 import br.ufma.lsd.mobileSUS.entidades.Chamado;
 import br.ufma.lsd.mobileSUS.entidades.Msg;
 import br.ufma.lsd.mobileSUS.entidades.Usuario;
@@ -53,11 +55,11 @@ public class ControllerTelasAbertas {
 		}
 	}
 
-	public static void fecharChamado(Chamado c) {
-		System.out.println("Fechar tela:"+c+":"+listaTelasChamadosAbertas.containsKey(c));
-		if(listaTelasMensagensAbertas.containsKey(c)){
-			listaTelasChamadosAbertas.remove(c);
-		}
+	public static void fecharChamado(Chamado chamado) {
+		System.out.println("Fechar tela:"+chamado+":"+listaTelasChamadosAbertas.containsKey(chamado));
+	//	if(listaTelasMensagensAbertas.containsKey(c)){
+			listaTelasChamadosAbertas.remove(chamado);
+	//	}
 	}
 	
 	public static void forcarFecharChamado(Chamado c) {
@@ -73,6 +75,12 @@ public class ControllerTelasAbertas {
 		if(listaTelasMensagensAbertas.containsKey(u)){
 			TelaChat tela = listaTelasMensagensAbertas.get(u);
 			tela.mostrarMensagem(msg);
+		}
+	}
+
+	public static void fecharChamado(TelaChamado t) {
+		if(listaTelasChamadosAbertas.containsValue(t)){
+			System.out.println("nao removel!!!!!!!!");
 		}
 	}
 }

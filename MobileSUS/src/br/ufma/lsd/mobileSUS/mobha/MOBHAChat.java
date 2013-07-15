@@ -22,7 +22,7 @@ public class MOBHAChat {
 
 	private static void recever(Object o) {
 		
-		System.out.println(o);
+		System.out.println(">>>>>>>>>>Chat:"+o);
 		if(o instanceof GenericInformation){
 			GenericInformation g=(GenericInformation)o;
 			System.out.println(g.message);

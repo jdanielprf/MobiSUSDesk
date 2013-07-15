@@ -84,7 +84,7 @@ public class TelaMapa {
 		lblLAtLong.setText("New Label");
 		
 		if(lat!=null&&log!=null){
-			String str="mudarPosicao("+lat+","+log+");";
+			String str="mudarPosicao("+lat+","+  log+");";
 			browser.execute(str);
 			System.out.println(str);
 		}
@@ -117,7 +117,7 @@ public class TelaMapa {
 		}
 		public Object function (Object[] arguments) {
 			System.out.println ("theJavaFunction() called from javascript with args:"+arguments[0]+","+arguments[1]);
-			lblLAtLong.setText("("+arguments[0]+","+arguments[1]+")");
+			lblLAtLong.setText("("+arguments[1]+","+arguments[0]+")");
 			map.lat=""+arguments[0];
 			map.log=""+arguments[1];
 			return null;

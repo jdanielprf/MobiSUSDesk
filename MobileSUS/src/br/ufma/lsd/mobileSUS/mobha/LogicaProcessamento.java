@@ -24,7 +24,7 @@ import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 public class LogicaProcessamento {
 	private DAO s = TratarEventos.sessao;
 	public String pasta = "arquivos/";
-	private boolean check = false;
+	private boolean checkConexao = false;
 
 	public void init() {
 
@@ -35,7 +35,8 @@ public class LogicaProcessamento {
 				System.out.println("Conectando...");
 				processarChat();
 				processarRecebimentoInfoContexto();
-				check = true;
+				reprocessarRecebimentoInfoContexto();
+				checkConexao = true;
 				System.out.println("Conectado");
 			}
 		});
@@ -43,7 +44,7 @@ public class LogicaProcessamento {
 
 		ActionListener action = new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				if (!check) {
+				if (!checkConexao) {
 					JOptionPane
 							.showMessageDialog(null,
 									"Não foi possivel estabelecer conexao com o servidor!");
@@ -55,6 +56,7 @@ public class LogicaProcessamento {
 		Timer t = new Timer(4 * 1000, action);
 		t.setRepeats(false);
 		t.start();
+
 	}
 
 	public void processarChat() {
@@ -72,9 +74,9 @@ public class LogicaProcessamento {
 
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-//							TelaPrincipal.window
-//									.carregarTabelaUsuarios(TratarEventos.sessao
-//											.getUsuarios());
+							// TelaPrincipal.window
+							// .carregarTabelaUsuarios(TratarEventos.sessao
+							// .getUsuarios());
 							ControllerTelasAbertas.chatInvocar(usuario, msg);
 						}
 					});
@@ -142,6 +144,7 @@ public class LogicaProcessamento {
 
 								usuario.setLatitude(lat);
 								usuario.setLongitude(log);
+
 								Display.getDefault().asyncExec(new Runnable() {
 									public void run() {
 										TelaPrincipal.window
@@ -155,6 +158,28 @@ public class LogicaProcessamento {
 						}
 					}, usuario.getId());
 		}
+	}
+
+	public void reprocessarRecebimentoInfoContexto() {
+		final List<Usuario> listaUsuarios = s.getUsuarios();
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(30 * 1000);
+					for (Iterator<Usuario> iterator = listaUsuarios.iterator(); iterator
+							.hasNext();) {
+						final Usuario usuario = (Usuario) iterator.next();
+						Processamento.get().registrarRecebimetoContexto(
+								usuario.getId());
+					}
+				} catch (Exception e) {
+//erro
+				}
+			}
+		}).start();
+
 	}
 
 	public void enviarChamado(Chamado chamado) {
@@ -194,9 +219,10 @@ public class LogicaProcessamento {
 		Chamado c = lerChamado(chamado);
 		if (c != null) {
 			Chamado c2 = TratarEventos.buscarChamado(c.getId());
-			c2.setRelatorio(c.getRelatorio());
+			c2.setRelatorio(">>>>>>" + c.getRelatorio());
 			c2.setStatus(Chamado.STATUS_FECHADO);
 			c2.getResponsavel().setChamado(null);
+			TratarEventos.sessao.salvar(c2);
 		}
 	}
 

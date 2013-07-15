@@ -6,11 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 import br.ufma.lsd.mbhealthnet.android.mobha.content.MOBHAContentImpl;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentDownloadRequest;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentDownloadResponse;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentFile;
+import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentListDirectoryResponse;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentMetaData;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentSearchByMetaData;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContentUploadRequest;
@@ -22,12 +24,14 @@ import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 public class MOBHAConteudo {
 	private static String userCentral=MOBHAUtil.central;
 	private static MOBHAContentImpl contService;
+	private static HashMap<String, String> listaId=new HashMap<>();
+	
 	public static void main(String[] args) {
 		init();
 	//	upload(userCentral,"sadfasdfasdf".getBytes());
 		download("e1u2", "13");
 		
-		listarDiretorio();
+	//	listarDiretorio();
 		System.out.println("Fim");
 	}
 	public static void init() {
@@ -43,14 +47,20 @@ public class MOBHAConteudo {
 			contService.registerSubTopicListener(new PubSubTopicListener() {			
 				@Override
 				public void processTopic(Object o) {
-					System.out.println("processando...");
-					System.out.println(o);
+					
+					System.out.println(">>>>>>Conetudo:"+o);
 					if(o instanceof GenericInformation){
 						GenericInformation g=(GenericInformation)o;
 						System.out.println(g.message);
 					}else if(o instanceof ContentDownloadResponse){
 						ContentDownloadResponse resposta = (ContentDownloadResponse)o;
-						salvarArquivo(resposta.contentFile.contentFile, TratarEventos.sessao.getDir() +"/temp/"+resposta.contentId+".png");	
+						salvarArquivo(resposta.contentFile.contentFile, TratarEventos.sessao.getDir() +"/chamados/"+resposta.contentId+".png");	
+					}else if(o instanceof ContentMetaData){
+						
+					}
+					else if(o instanceof ContentListDirectoryResponse){
+						ContentListDirectoryResponse dir=(ContentListDirectoryResponse) o;
+						baixarDiretorio(dir);
 					}
 				}
 			});
@@ -76,8 +86,18 @@ public class MOBHAConteudo {
 		return new FileInputStream(new File("settings.properties"));
 	}
 	
+	public static void baixarDiretorio(ContentListDirectoryResponse c) {
+		ContentMetaData[] lista = c.contentList;
+		for (int i = 0; i < lista.length; i++) {
+			listaId.put(lista[i].contentId, lista[i].contentName);
+			download(MOBHAUtil.central, lista[i].contentId);
+		}
+	}
+	
+	
 	public static void registrar(LogicaProcessamento logica) {
 	}
+	
 	
 	public static void upload(String id,byte[] dados){
 		System.out.println("upload");
@@ -98,10 +118,10 @@ public class MOBHAConteudo {
 	
 	
 	
-	public static void download(String id,String idContent){
+	public static void download(String idUsuario,String idContent){
 		System.out.println("download");
 		ContentDownloadRequest cont=new ContentDownloadRequest();
-		cont.fromUserName=id;
+		cont.fromUserName=idUsuario;
 		cont.contentId=idContent;
 		
 		try{
@@ -111,8 +131,11 @@ public class MOBHAConteudo {
 		}
 	}
 	
-	private static void listarDiretorio(){
+	public static void listarDiretorio(String dir,String id){
 		//usar find metadados
+		if(contService==null){
+			return;
+		}
 		System.out.println("Listar diretorio");
 		ContentSearchByMetaData cont=new ContentSearchByMetaData();
 		
@@ -121,8 +144,8 @@ public class MOBHAConteudo {
 		list[1]="name";
 		
 		String list2[]=new String[2];
-		list2[0]="/home/gateway/e1/";
-		list2[1]="teste2.txt";
+		list2[0]=dir;
+		list2[1]=id;
 		
 		cont.fromUserName=userCentral;
 		cont.metadaDataName=list;
@@ -146,7 +169,6 @@ public class MOBHAConteudo {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 }

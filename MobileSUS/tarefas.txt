@@ -1,7 +1,7 @@
 
 ********************Desktop:
 
-visualização em tempo real das posições das ambulancias(por timer?)
+visualização em tempo real das posições das ambulancias(por timer)
 visualização no mapa a localização dos chamados
 ==colocar ambulancias livres em verde
 ==colocar ambulancias ocupadas em vermelho
@@ -22,7 +22,6 @@ controlar status chamados
 midleware[Daniel]
 ==interface de comunicação para o chat
 ==interface de comunicação para o download de arquivos
-==upload do chamado
 ==interface de comunicação para o contexto
 
 ********************Mobile:

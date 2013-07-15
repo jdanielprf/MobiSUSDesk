@@ -6,21 +6,27 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import br.lsd.ufma.mbhealth.server.MobileDDSConnection;
+import org.eclipse.swt.widgets.Display;
+
+import br.ufma.lsd.mbhealth.client.monitoring.MobileDDSConnection;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContextInformation;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.ContextInformationSubscribe;
 import br.ufma.lsd.mbhealthnet.communication.ddstopics.GenericInformation;
+import br.ufma.lsd.mbhealthnet.communication.ddstopics.contextUserStatus;
 import br.ufma.lsd.mbhealthnet.communication.pubsub.PubSubTopicListener;
+import br.ufma.lsd.mobileSUS.entidades.Usuario;
+import br.ufma.lsd.mobileSUS.telas.TelaPrincipal;
+import br.ufma.lsd.mobileSUS.telas.help.TratarEventos;
 
 public class MOBHAContexto {
-	private static String nome = MOBHAUtil.central;
+	private static String idCentral = MOBHAUtil.central;
 	private static String receberDe = "e1u2";
 
 	private static MobileDDSConnection mobhaContext;
 	private static HashMap<String, InterfaceContexto> lista = new HashMap<String, InterfaceContexto>();
 
 	private static void receber(Object o) {
-
+		System.out.println(">>>>>Contexto:" + o);
 		if (o instanceof ContextInformation) {
 			ContextInformation g = (ContextInformation) o;
 			System.out.println(g.ownerUserName);
@@ -37,23 +43,44 @@ public class MOBHAContexto {
 				System.out.println("nao encontrado");
 			}
 			
+		} else if (o instanceof contextUserStatus) {
+			contextUserStatus status = (contextUserStatus) o;
+			Usuario usuario = TratarEventos.sessao.buscarUsuario(status.userName);
+			System.out.println("usuario:"+status.userName);
+			System.out.println("status:"+status.status);
+			System.out.println("usuario:"+usuario);
+			if(usuario!=null){
+				if(!status.status.equals(usuario.getStatus())){
+					usuario.setStatus(status.status);
+					TratarEventos.sessao.salvar(usuario);
+					
+					
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							TelaPrincipal.window
+									.carregarTabelaUsuarios(TratarEventos.sessao
+											.getUsuarios());
+						}
+					});
+				}
+			}
 		} else if (o instanceof GenericInformation) {
 			GenericInformation g = (GenericInformation) o;
 			System.out.println(g.message);
 		}
+		
 	}
 
 	public static void init() {
 		System.out.println("inicio");
 		try {
 			mobhaContext = MobileDDSConnection.getInstance(
-					settingsProperties(), nome);
-
+					settingsProperties(), idCentral);
+			
 			mobhaContext.registerSubTopicListener(new PubSubTopicListener() {
 
 				@Override
 				public void processTopic(Object o) {
-					System.out.println(">>>>>>>>>>" + o);
 					receber(o);
 				}
 			});
@@ -67,17 +94,37 @@ public class MOBHAContexto {
 	public static void registrar(String de, InterfaceContexto cal) {
 
 		// Solicitar permissão para receber as informações de Sandra
-		ContextInformationSubscribe subscribeSandra = new ContextInformationSubscribe();
-		subscribeSandra.requestedUserName = receberDe;
-		subscribeSandra.requestorUserName = nome;
+		ContextInformationSubscribe inf = new ContextInformationSubscribe();
+		inf.requestedUserName = de;
+		inf.requestorUserName = idCentral;
 		String[] information = { "this.location.latitude",
 				"this.location.longitude" };
-		subscribeSandra.contextInformationInterest = information;
-		subscribeSandra.secure = false;
+		inf.contextInformationInterest = information;
+		inf.secure = false;
 		
 		try {
 			lista.put(de, cal);
-			mobhaContext.publishContextInformationsSubscribe(subscribeSandra);
+			mobhaContext.publishContextInformationsSubscribe(inf);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public static void registrar(String de) {
+
+		// Solicitar permissão para receber as informações de Sandra
+		ContextInformationSubscribe inf = new ContextInformationSubscribe();
+		inf.requestedUserName = de;
+		inf.requestorUserName = idCentral;
+		String[] information = { "this.location.latitude",
+				"this.location.longitude" };
+		inf.contextInformationInterest = information;
+		inf.secure = false;
+		
+		try {
+			
+			mobhaContext.publishContextInformationsSubscribe(inf);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -91,7 +138,7 @@ public class MOBHAContexto {
 
 	public static void main(String[] args) {
 		MOBHAContexto.init();
-		MOBHAContexto.registrar(receberDe, null);
+		MOBHAContexto.registrar("e1u4", null);
 	}
 
 }

@@ -17,6 +17,8 @@ public class Usuario {
 	
 	@OneToOne()
 	private Chamado chamado;
+	//@Transient
+	private String status;
 	
 	public Usuario(){}
 	
@@ -70,5 +72,13 @@ public class Usuario {
 
 	public void setChamado(Chamado chamado) {
 		this.chamado = chamado;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }

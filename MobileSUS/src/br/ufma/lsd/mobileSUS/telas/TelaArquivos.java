@@ -12,6 +12,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 
+import br.ufma.lsd.mobileSUS.mobha.MOBHAConteudo;
+import br.ufma.lsd.mobileSUS.mobha.MOBHAUtil;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.MouseAdapter;
+
 public class TelaArquivos {
 
 	protected Shell shlArquivos;
@@ -24,8 +29,9 @@ public class TelaArquivos {
 	 * @param args
 	 */
 
-	public TelaArquivos(String dir) {
+	public TelaArquivos(String dir,String id) {
 		this.dir = dir;
+		MOBHAConteudo.listarDiretorio(dir,id);
 		open();
 		
 	}
@@ -33,7 +39,7 @@ public class TelaArquivos {
 	public static void main(String[] args) {
 		try {
 			new TelaArquivos(
-					"C:\\Users\\Public\\Pictures\\Sample Pictures\\");
+					"C:\\Users\\Public\\Pictures\\Sample Pictures\\","");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -66,7 +72,17 @@ public class TelaArquivos {
 		shlArquivos.setText("Arquivos");
 
 		list = new List(shlArquivos, SWT.BORDER);
-		list.setBounds(0, 0, 345, 321);
+		list.setBounds(0, 0, 355, 306);
+		
+		Button btnNewButton = new Button(shlArquivos, SWT.NONE);
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+				carrrgarLista();
+			}
+		});
+		btnNewButton.setBounds(0, 306, 355, 25);
+		btnNewButton.setText("Atualizar");
 
 		list.addMouseListener(new MouseListener() {
 
